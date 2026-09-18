@@ -1,0 +1,1069 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GTA VI — Countdown</title>
+<meta name="theme-color" content="#0a0a0a">
+<meta name="description" content="GTA VI Countdown — Real-time countdown to Grand Theft Auto VI release with immersive visual effects and synthwave music.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0a0a0a;color:#fff;font-family:'Inter',-apple-system,sans-serif;overflow:hidden;user-select:none}
+body.theme-dark{--bg:#0a0a0a;--accent1:#FF6B9D;--accent2:#8B5CF6}
+body.theme-neon{--bg:#0d0221;--accent1:#ff00ff;--accent2:#00ffff}
+body.theme-retro{--bg:#1a1a2e;--accent1:#ff6b35;--accent2:#f7c948}
+.bg{position:fixed;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity 1.8s cubic-bezier(.4,0,.2,1);z-index:0;will-change:opacity}.bg.active{opacity:.65}
+#parallax-wrap{position:fixed;inset:-50px;z-index:0;transition:transform .3s ease-out;will-change:transform}
+#gradient-bg{position:fixed;inset:0;z-index:0;opacity:0;transition:opacity 1s;background:linear-gradient(135deg,rgba(255,20,147,.15) 0%,rgba(139,92,246,.15) 25%,rgba(0,206,209,.1) 50%,rgba(255,140,66,.15) 75%,rgba(255,20,147,.15) 100%);background-size:400% 400%;animation:gradShift 20s ease infinite;will-change:opacity,background-position}#gradient-bg.active{opacity:1}
+@keyframes gradShift{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
+#scanlines{position:fixed;inset:0;z-index:50;pointer-events:none;opacity:0;transition:opacity .5s;background:repeating-linear-gradient(0deg,rgba(0,0,0,.15) 0px,rgba(0,0,0,.15) 1px,transparent 1px,transparent 2px)}#scanlines.active{opacity:1}
+#rain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .5s;overflow:hidden}#rain.active{opacity:1}
+.raindrop{position:absolute;width:2px;background:linear-gradient(to bottom,transparent,rgba(174,194,224,.5));will-change:transform}
+@keyframes rainFall{0%{transform:translateY(-100px)}100%{transform:translateY(100vh)}}
+#fog{position:fixed;bottom:0;left:0;right:0;height:40vh;z-index:1;pointer-events:none;opacity:0;transition:opacity .5s;overflow:hidden}#fog.active{opacity:1}
+.fog-layer{position:absolute;bottom:0;width:200%;height:100%;background:radial-gradient(ellipse at center,rgba(255,255,255,.08) 0%,transparent 70%);animation:fogDrift 30s linear infinite;will-change:transform}
+.fog-layer:nth-child(2){animation-duration:25s;animation-direction:reverse;opacity:.6}
+@keyframes fogDrift{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;transition:opacity .5s}#stars.active{opacity:1}
+.star{position:absolute;width:2px;height:2px;background:#fff;border-radius:16px;animation:twinkle 3s ease-in-out infinite;will-change:opacity,transform}
+@keyframes twinkle{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.5)}}
+#light-beams{position:fixed;bottom:0;left:0;right:0;height:60vh;z-index:0;opacity:0;transition:opacity 1s;pointer-events:none;overflow:hidden}#light-beams.active{opacity:1}
+.beam{position:absolute;bottom:0;width:3px;height:100%;opacity:.4;filter:blur(8px);animation:beamPulse 4s ease-in-out infinite;will-change:opacity,transform}
+@keyframes beamPulse{0%,100%{opacity:.2;transform:scaleY(.8)}50%{opacity:.5;transform:scaleY(1)}}
+.orb{position:fixed;width:320px;height:320px;border-radius:16px;background:radial-gradient(circle,rgba(255,255,255,.06) 0%,transparent 70%);pointer-events:none;transform:translate(-50%,-50%);z-index:1;will-change:left,top}
+.ripple{position:fixed;border-radius:16px;pointer-events:none;z-index:100;animation:rippleExpand .8s ease-out forwards;will-change:transform,opacity}
+@keyframes rippleExpand{0%{transform:scale(0);opacity:.8}100%{transform:scale(4);opacity:0}}
+#easter-egg{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);width:200px;height:200px;background:radial-gradient(circle,rgba(255,107,157,.3) 0%,transparent 70%);border-radius:16px;pointer-events:none;z-index:200;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+#easter-egg.active{transform:translate(-50%,-50%) scale(1);animation:eggPulse 1s ease-out}
+@keyframes eggPulse{0%{transform:translate(-50%,-50%) scale(0);opacity:1}50%{transform:translate(-50%,-50%) scale(1.5);opacity:.8}100%{transform:translate(-50%,-50%) scale(2);opacity:0}}
+.content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.label{font-size:clamp(11px,1.4vw,14px);letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:32px;font-weight:300}
+.countdown{display:flex;gap:clamp(12px,3vw,40px);align-items:center}
+.unit{display:flex;flex-direction:column;align-items:center}
+.num-wrap{position:relative;padding:clamp(8px,1.2vw,16px) clamp(12px,1.8vw,24px);border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.12) 100%);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.35);box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 2px 4px rgba(255,255,255,.4),inset 0 -2px 4px rgba(0,0,0,.1),0 0 0 1px rgba(255,255,255,.1);overflow:hidden;will-change:transform;transition:all .3s ease}
+.num-wrap::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.1),transparent,rgba(255,255,255,.05),transparent);animation:glassShine 8s linear infinite;pointer-events:none;opacity:.6}
+.num-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,.1) 40%,transparent 100%);pointer-events:none;border-radius:20px 20px 0 0}
+.num{font-size:clamp(40px,9vw,100px);font-weight:600;line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em;background:linear-gradient(180deg,#fff 20%,rgba(255,255,255,.6) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 2px 8px rgba(0,0,0,.5));transition:transform .3s}
+.neon .num{text-shadow:0 0 10px var(--accent1),0 0 20px var(--accent1),0 0 40px var(--accent1),0 0 80px var(--accent2);-webkit-text-fill-color:#fff;background:none}
+.glitch .num{animation:glitchText 5s infinite}
+@keyframes glitchText{0%,95%,100%{transform:none;opacity:1}96%{transform:translate(-2px,1px) skewX(1deg);opacity:.8}97%{transform:translate(2px,-1px) skewX(-1deg);opacity:.9}98%{transform:translate(-1px,2px);opacity:.85}}
+.flip-anim .num{animation:flipNum .4s ease-out}
+@keyframes flipNum{0%{transform:rotateX(-90deg);opacity:0}100%{transform:rotateX(0);opacity:1}}
+.unit-label{font-size:clamp(8px,.9vw,10px);letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:8px;font-weight:300}
+.dot{font-size:clamp(28px,6vw,72px);font-weight:600;background:linear-gradient(180deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,.1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px;animation:breathe 3s ease-in-out infinite;will-change:opacity}
+@keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
+.date{margin-top:40px;font-size:clamp(11px,1.2vw,13px);color:rgba(255,255,255,.25);letter-spacing:.15em;font-weight:300}
+.hint{position:fixed;bottom:24px;font-size:11px;color:rgba(255,255,255,.15);letter-spacing:.1em;z-index:2}
+#particles{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.particle{position:absolute;border-radius:16px;pointer-events:none;animation:float linear infinite;will-change:transform,opacity}
+@keyframes float{0%{transform:translateY(100vh) rotate(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateY(-100px) rotate(720deg);opacity:0}}
+#settings-btn{position:fixed;top:20px;right:20px;width:44px;height:44px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);cursor:pointer;z-index:1000;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:20px;will-change:transform}
+#settings-btn:hover{background:rgba(255,255,255,.2);transform:rotate(90deg)}
+#settings-panel{position:fixed;top:74px;right:20px;width:300px;max-height:80vh;background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.15);border-radius:16px;backdrop-filter:blur(20px);padding:20px;z-index:999;opacity:0;transform:translateY(-10px) scale(.95);pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1);overflow-y:auto;will-change:transform,opacity}
+#settings-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.panel-title{font-size:13px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.7);margin-bottom:16px;text-transform:uppercase}
+.panel-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid rgba(255,255,255,.1)}
+.panel-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.section-title{font-size:11px;font-weight:600;letter-spacing:.1em;color:rgba(255,255,255,.5);margin-bottom:12px;text-transform:uppercase}
+.setting-item{display:flex;align-items:center;justify-content:space-between;padding:8px 0}
+.setting-label{font-size:12px;color:rgba(255,255,255,.6)}
+.toggle{position:relative;width:40px;height:22px;background:rgba(255,255,255,.15);border-radius:11px;cursor:pointer;transition:background .3s;flex-shrink:0}
+.toggle.active{background:linear-gradient(135deg,var(--accent1),var(--accent2))}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:16px;transition:transform .3s;box-shadow:0 2px 4px rgba(0,0,0,.3)}
+.toggle.active::after{transform:translateX(18px)}
+.custom-select{appearance:none;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 28px 6px 10px;color:#fff;font-size:12px;cursor:pointer;outline:none}
+.custom-select option{background:#1a1a2e;color:#fff}
+.date-input{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 10px;color:#fff;font-size:12px;outline:none;width:140px}
+.date-input::-webkit-calendar-picker-indicator{filter:invert(1)}
+#toolbar{position:fixed;bottom:20px;right:20px;display:flex;gap:10px;z-index:1000}
+.toolbar-btn{width:40px;height:40px;border-radius:16px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s;font-size:16px;will-change:transform}
+.download-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:linear-gradient(135deg,rgba(255,0,128,.6),rgba(128,0,255,.6));border:1px solid rgba(255,255,255,.2);border-radius:8px;color:#fff;font-size:12px;font-weight:600;text-decoration:none;cursor:pointer;transition:all .3s;white-space:nowrap}.download-btn:hover{background:linear-gradient(135deg,rgba(255,0,128,.9),rgba(128,0,255,.9));transform:scale(1.05);box-shadow:0 0 15px rgba(255,0,128,.4)}
+.toolbar-btn:hover{background:rgba(255,255,255,.2);transform:scale(1.1)}
+.toolbar-btn.active{background:linear-gradient(135deg,var(--accent1),var(--accent2))}
+body.fullscreen #settings-btn,body.fullscreen #toolbar,body.fullscreen .hint{opacity:0;pointer-events:none}
+body.fullscreen:hover #settings-btn,body.fullscreen:hover #toolbar,body.fullscreen:hover .hint{opacity:1;pointer-events:auto}
+#shortcuts-hint{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.9);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 20px;font-size:12px;color:rgba(255,255,255,.7);z-index:1000;opacity:0;pointer-events:none;transition:opacity .3s}
+#shortcuts-hint.visible{opacity:1}
+#shortcuts-hint kbd{display:inline-block;background:rgba(255,255,255,.15);border-radius:4px;padding:2px 6px;margin:0 4px;font-family:monospace}
+#widget-modal{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:2000;display:none;align-items:center;justify-content:center}
+#widget-modal.visible{display:flex}
+.modal-content{background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:24px;max-width:500px;width:90%}
+.modal-content h3{font-size:16px;margin-bottom:16px;color:rgba(255,255,255,.8)}
+.modal-content pre{background:rgba(0,0,0,.3);border-radius:8px;padding:12px;font-size:12px;color:rgba(255,255,255,.7);overflow-x:auto;margin-bottom:16px;white-space:pre-wrap;word-break:break-all}
+.modal-content button{padding:10px 20px;border-radius:8px;border:none;cursor:pointer;font-size:14px;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;margin-right:8px}
+
+#track-selector{position:fixed;bottom:70px;right:20px;width:220px;background:rgba(15,15,25,.95);border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px;z-index:1000;opacity:0;transform:translateY(8px) scale(.95);pointer-events:none;transition:all .25s cubic-bezier(.4,0,.2,1);will-change:transform,opacity}
+#track-selector.visible{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.track-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;cursor:pointer;transition:all .2s;font-size:12px;color:rgba(255,255,255,.55)}
+.track-item:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.85)}
+.track-item.active{background:linear-gradient(135deg,rgba(255,107,157,.2),rgba(139,92,246,.2));color:#fff}
+.track-item .track-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;background:rgba(255,255,255,.06)}
+.track-item.active .track-icon{background:linear-gradient(135deg,var(--accent1),var(--accent2))}
+.track-item .track-info{display:flex;flex-direction:column;gap:1px;min-width:0}
+.track-item .track-name{font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.track-item .track-meta{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.05em}
+.track-item.active .track-meta{color:rgba(255,255,255,.5)}
+#track-now{position:fixed;bottom:70px;right:70px;background:rgba(15,15,25,.85);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px 12px;font-size:11px;color:rgba(255,255,255,.5);z-index:999;opacity:0;pointer-events:none;transition:opacity .3s;white-space:nowrap}
+#track-now.visible{opacity:1}
+#music-hint{position:fixed;bottom:70px;right:70px;background:rgba(15,15,25,.92);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:8px 14px;font-size:11px;color:rgba(255,255,255,.55);z-index:1001;opacity:0;pointer-events:none;transition:opacity .4s,transform .4s;white-space:nowrap;transform:translateY(4px)}
+#music-hint.visible{opacity:1;transform:translateY(0)}
+#music-hint .hint-row{display:flex;align-items:center;gap:6px;margin:2px 0}
+#music-hint .hint-key{display:inline-block;background:rgba(255,255,255,.12);border-radius:4px;padding:1px 6px;font-family:monospace;font-size:10px;color:rgba(255,255,255,.7)}
+
+/* Volume Control */
+#volume-control{position:fixed;bottom:70px;left:20px;display:flex;align-items:center;gap:10px;background:rgba(15,15,25,.85);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:6px 12px;z-index:999;opacity:0;pointer-events:none;transition:opacity .3s}
+#volume-control.visible{opacity:1;pointer-events:auto}
+#volume-icon{font-size:16px;cursor:pointer;user-select:none}
+#volume-slider{-webkit-appearance:none;width:80px;height:4px;background:rgba(255,255,255,.2);border-radius:2px;outline:none;cursor:pointer}
+#volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border-radius:16px;cursor:pointer;box-shadow:0 0 6px rgba(255,107,157,.5)}
+#volume-slider::-moz-range-thumb{width:12px;height:12px;background:linear-gradient(135deg,var(--accent1),var(--accent2));border-radius:16px;cursor:pointer;border:none}
+#volume-value{font-size:11px;color:rgba(255,255,255,.5);min-width:30px;text-align:right}
+/* Milestone */
+.milestone-overlay{position:fixed;inset:0;z-index:300;pointer-events:none;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .5s;will-change:opacity}
+.milestone-overlay.active{opacity:1}
+.milestone-text{font-size:clamp(48px,12vw,120px);font-weight:700;background:linear-gradient(135deg,var(--accent1),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-shadow:0 0 40px var(--accent1);animation:milestonePulse 2s ease-out;will-change:transform,opacity}
+@keyframes milestonePulse{0%{transform:scale(0.5);opacity:0}30%{transform:scale(1.2);opacity:1}100%{transform:scale(1);opacity:0}}
+.milestone-particles{position:fixed;inset:0;z-index:299;pointer-events:none;overflow:hidden}
+.milestone-particle{position:absolute;width:8px;height:8px;border-radius:16px;animation:milestoneFloat 3s ease-out forwards;will-change:transform,opacity}
+@keyframes milestoneFloat{0%{transform:translateY(0) scale(1);opacity:1}100%{transform:translateY(-200px) scale(0);opacity:0}}
+/* PWA Install */
+#pwa-install{position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 20px;display:flex;align-items:center;gap:12px;z-index:1000;opacity:0;pointer-events:none;transition:all .3s}
+#pwa-install.visible{opacity:1;pointer-events:auto}
+#pwa-install-text{font-size:12px;color:rgba(255,255,255,.7)}
+#pwa-install-btn{padding:6px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;font-size:12px;cursor:pointer;white-space:nowrap}
+#pwa-install-close{background:none;border:none;color:rgba(255,255,255,.4);cursor:pointer;font-size:16px;padding:0 4px}
+
+/* ═══ 弹幕系统 ═══ */
+#danmaku-container{position:fixed;inset:0;z-index:55;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .5s}
+#danmaku-container.active{opacity:1}
+.danmaku-item{position:absolute;white-space:nowrap;font-size:14px;font-weight:500;color:#fff;pointer-events:none;will-change:transform;animation:danmakuScroll linear forwards;opacity:0;padding:8px 18px;border-radius:20px;background:linear-gradient(135deg,rgba(255,255,255,.18) 0%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.12) 100%);backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.35);box-shadow:0 8px 32px rgba(0,0,0,.3),inset 0 2px 4px rgba(255,255,255,.4),inset 0 -2px 4px rgba(0,0,0,.1),0 0 0 1px rgba(255,255,255,.1),0 0 20px rgba(255,107,157,.08);text-shadow:0 1px 2px rgba(0,0,0,.5);overflow:hidden}
+.danmaku-item::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.35) 0%,rgba(255,255,255,.08) 40%,transparent 100%);pointer-events:none;border-radius:20px 20px 0 0}
+.danmaku-item::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.08),transparent,rgba(255,255,255,.04),transparent);animation:glassShine 8s linear infinite;pointer-events:none;opacity:.5}
+@keyframes danmakuScroll{0%{transform:translateX(0);opacity:0}10%{opacity:1}90%{opacity:1}100%{transform:translateX(calc(-100vw - 100%));opacity:0}}
+.danmaku-input-wrap{display:flex;gap:8px;align-items:center}
+.danmaku-input{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:8px 12px;color:#fff;font-size:12px;outline:none;transition:border-color .3s}
+.danmaku-input:focus{border-color:var(--accent1)}
+.danmaku-input::placeholder{color:rgba(255,255,255,.3)}
+.danmaku-send{padding:8px 16px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--accent1),var(--accent2));color:#fff;font-size:12px;font-weight:600;cursor:pointer;transition:all .3s;white-space:nowrap}
+.danmaku-send:hover{transform:scale(1.05);box-shadow:0 0 12px rgba(255,107,157,.4)}
+.danmaku-send:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.danmaku-status{font-size:10px;color:rgba(255,255,255,.4);margin-top:6px;display:flex;justify-content:space-between;align-items:center}
+.danmaku-colors{display:flex;gap:4px;margin-top:8px}
+.danmaku-color{width:18px;height:18px;border-radius:16px;cursor:pointer;border:2px solid transparent;transition:all .2s;flex-shrink:0}
+.danmaku-color:hover{transform:scale(1.2)}
+.danmaku-color.selected{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,.5)}
+.danmaku-toast{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.8);background:rgba(20,20,30,.95);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:12px 24px;color:#fff;font-size:13px;z-index:9999;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.4,0,.2,1)}
+.danmaku-toast.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.danmaku-toast.error{border-color:rgba(255,80,80,.5);color:#ff5050}
+.danmaku-city{position:absolute;right:8px;bottom:2px;font-size:0.5em;opacity:0.7;color:rgba(255,255,255,0.8);text-shadow:0 1px 2px rgba(0,0,0,0.5);pointer-events:none}
+@keyframes glassShine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.num-wrap:hover{transform:scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.4),inset 0 2px 6px rgba(255,255,255,.5),inset 0 -2px 4px rgba(0,0,0,.1),0 0 0 1px rgba(255,255,255,.15)}
+</style>
+</head>
+<body class="theme-dark">
+
+<div id="parallax-wrap">
+  <div class="bg" id="bg0"></div>
+  <div class="bg" id="bg1"></div>
+  <div class="bg" id="bg2"></div>
+</div>
+<div id="gradient-bg"></div>
+<div id="light-beams"></div>
+<div id="scanlines"></div>
+<div id="rain"></div>
+<div id="fog"><div class="fog-layer"></div><div class="fog-layer"></div></div>
+<div id="stars"></div>
+<div id="danmaku-container"></div>
+<div id="danmaku-toast" class="danmaku-toast"></div>
+<div id="particles"></div>
+<div class="orb" id="orb"></div>
+<div id="easter-egg"></div>
+
+<div class="content">
+  <div class="label" data-i18n="title">Grand Theft Auto VI</div>
+  <div class="countdown">
+    <div class="unit"><div class="num-wrap"><span class="num" id="d">--</span></div><span class="unit-label" data-i18n="days">Days</span></div>
+    <span class="dot">:</span>
+    <div class="unit"><div class="num-wrap"><span class="num" id="h">--</span></div><span class="unit-label" data-i18n="hours">Hours</span></div>
+    <span class="dot">:</span>
+    <div class="unit"><div class="num-wrap"><span class="num" id="m">--</span></div><span class="unit-label" data-i18n="min">Min</span></div>
+    <span class="dot">:</span>
+    <div class="unit"><div class="num-wrap"><span class="num" id="s">--</span></div><span class="unit-label" data-i18n="sec">Sec</span></div>
+  </div>
+  <div class="date" id="target-date">2026.11.19</div>
+</div>
+
+<div class="hint" data-i18n="platform">PS5 · Xbox Series X|S</div>
+<div id="shortcuts-hint"><kbd>F</kbd> 全屏 <kbd>M</kbd> 静音 <kbd>S</kbd> 分享 <kbd>?</kbd> 帮助</div>
+
+<button id="settings-btn">⚙</button>
+
+<div id="settings-panel">
+  <div class="panel-title" data-i18n="settings">特效设置</div>
+
+  <div class="panel-section">
+    <div class="section-title" data-i18n="visual">视觉效果</div>
+    <div class="setting-item"><span class="setting-label" data-i18n="neon">霓虹灯文字</span><div class="toggle" data-feature="neon"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="gradient">渐变背景</span><div class="toggle" data-feature="gradient"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="glitch">故障艺术</span><div class="toggle" data-feature="glitch"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="beams">光束效果</span><div class="toggle" data-feature="beams"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="scanlines">扫描线</span><div class="toggle" data-feature="scanlines"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="rain">雨滴效果</span><div class="toggle" data-feature="rain"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="fog">烟雾效果</span><div class="toggle" data-feature="fog"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="stars">星空效果</span><div class="toggle" data-feature="stars"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="parallax">3D 视差</span><div class="toggle" data-feature="parallax"></div></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="section-title" data-i18n="particlesSection">粒子效果</div>
+    <div class="setting-item"><span class="setting-label" data-i18n="particles">粒子效果</span><div class="toggle active" data-feature="particles"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="particleFollow">粒子跟随鼠标</span><div class="toggle" data-feature="particleFollow"></div></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="section-title" data-i18n="interaction">交互效果</div>
+    <div class="setting-item"><span class="setting-label" data-i18n="ripple">点击波纹</span><div class="toggle" data-feature="ripple"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="flip">数字翻牌</span><div class="toggle" data-feature="flip"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="sound">倒计时音效</span><div class="toggle" data-feature="sound"></div></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="easterEgg">长按彩蛋</span><div class="toggle" data-feature="easterEgg"></div></div>
+  </div>
+
+  <div class="panel-section">
+    <div class="section-title" data-i18n="themeSection">主题设置</div>
+    <div class="setting-item">
+      <span class="setting-label" data-i18n="theme">主题风格</span>
+      <select class="custom-select" id="theme-select"><option value="dark">暗黑</option><option value="neon">霓虹</option><option value="retro">复古</option></select>
+    </div>
+    <div class="setting-item">
+      <span class="setting-label" data-i18n="language">语言</span>
+      <select class="custom-select" id="language-select"><option value="en">English</option><option value="zh">中文</option><option value="ja">日本語</option><option value="ko">한국어</option></select>
+    </div>
+  </div>
+
+  <div class="panel-section">
+  <div class="panel-section">
+    <div class="section-title" data-i18n="downloadSection">资源下载</div>
+    <div class="setting-item">
+      <span class="setting-label" data-i18n="downloadOriginal">原始分辨率图片包</span>
+      <a href="./gta6-images-4k.zip" download class="download-btn" id="download-zip">📥 下载 ZIP</a>
+    </div>
+    <div class="setting-item" style="font-size:11px;color:rgba(255,255,255,.4);margin-top:4px">
+      <span>42 张 · 4K 精简包</span>
+    </div>
+  </div>
+
+    <div class="section-title" data-i18n="customSection">自定义倒计时</div>
+    <div class="setting-item"><span class="setting-label" data-i18n="customDate">目标日期</span><input type="datetime-local" class="date-input" id="custom-date" value="2026-11-19T00:00"></div>
+    <div class="setting-item"><span class="setting-label" data-i18n="customLabel">标题文字</span><input type="text" class="date-input" id="custom-label" placeholder="Grand Theft Auto VI" style="width:120px"></div>
+  </div>
+
+
+  <div class="panel-section">
+    <div class="section-title" data-i18n="danmakuSection">?? 弹幕留言</div>
+    <div class="setting-item">
+      <span class="setting-label" data-i18n="danmakuToggle">弹幕显示</span>
+      <div class="toggle active" data-feature="danmaku"></div>
+    </div>
+    <div style="margin-top:10px">
+      <div class="danmaku-input-wrap">
+        <input type="text" class="danmaku-input" id="danmaku-input" maxlength="50" data-i18n-placeholder="danmakuPlaceholder" placeholder="发送一条弹幕...">
+        <button class="danmaku-send" id="danmaku-send" data-i18n="danmakuSend">发送</button>
+      </div>
+      <div class="danmaku-colors" id="danmaku-colors"></div>
+      <div class="danmaku-status">
+        <span id="danmaku-count">--</span>
+        <span data-i18n="danmakuHint">≤50字 · 违规内容自动过滤</span>
+      </div>
+    </div>
+  </div>
+  <div class="panel-section">
+    <div class="section-title" data-i18n="performance">性能设置</div>
+    <div class="setting-item"><span class="setting-label" data-i18n="lowPerf">低性能模式</span><div class="toggle" data-feature="lowPerf"></div></div>
+  </div>
+</div>
+
+<div id="toolbar">
+  <button class="toolbar-btn" id="fullscreen-btn" title="全屏 (F)">⛶</button>
+  <button class="toolbar-btn" id="share-btn" title="分享 (S)">↗</button>
+  <button class="toolbar-btn" id="widget-btn" title="嵌入代码">⟨/⟩</button>
+    <button class="toolbar-btn" id="music-btn" title="Synthwave 音乐">♪</button>
+</div>
+
+</div>
+
+<div id="track-now"></div>
+<div id="volume-control">
+  <span id="volume-icon">🔊</span>
+  <input type="range" id="volume-slider" min="0" max="100" value="55">
+  <span id="volume-value">55%</span>
+</div>
+<div class="milestone-overlay" id="milestone-overlay"><div class="milestone-text" id="milestone-text"></div></div>
+<div class="milestone-particles" id="milestone-particles"></div>
+<div id="pwa-install">
+  <span id="pwa-install-text">📱 添加到主屏幕，离线使用</span>
+  <button id="pwa-install-btn">安装</button>
+  <button id="pwa-install-close">×</button>
+</div>
+<div id="music-hint">
+  <div class="hint-row"><span class="hint-key">单击</span> 播放 / 暂停</div>
+  <div class="hint-row"><span class="hint-key">双击</span> 切换曲目</div>
+</div>
+<div id="track-selector"></div>
+
+<div id="widget-modal">
+  <div class="modal-content">
+    <h3>嵌入到你的网站</h3>
+    <pre><code>&lt;iframe src="./" width="100%" height="400" frameborder="0"&gt;&lt;/iframe&gt;</code></pre>
+    <button id="widget-copy">复制代码</button>
+    <button id="widget-close">关闭</button>
+  </div>
+</div>
+
+<script>
+// ── 多语言 ──
+const i18n={
+  zh:{title:'Grand Theft Auto VI',days:'天',hours:'时',min:'分',sec:'秒',platform:'PS5 · Xbox Series X|S',settings:'特效设置',visual:'视觉效果',neon:'霓虹灯文字',gradient:'渐变背景',glitch:'故障艺术',beams:'光束效果',scanlines:'扫描线',rain:'雨滴效果',fog:'烟雾效果',stars:'星空效果',parallax:'3D 视差',particlesSection:'粒子效果',particles:'粒子效果',particleFollow:'粒子跟随鼠标',interaction:'交互效果',ripple:'点击波纹',flip:'数字翻牌',sound:'倒计时音效',easterEgg:'长按彩蛋',themeSection:'主题设置',theme:'主题风格',language:'语言',customSection:'自定义倒计时',customDate:'目标日期',customLabel:'标题文字',performance:'性能设置',lowPerf:'低性能模式',danmakuSection:'?? 弹幕留言',danmakuToggle:'弹幕显示',danmakuPlaceholder:'发送一条弹幕...',danmakuSend:'发送',danmakuHint:'≤50字 · 违规内容自动过滤'},
+  en:{title:'Grand Theft Auto VI',days:'Days',hours:'Hours',min:'Min',sec:'Sec',platform:'PS5 · Xbox Series X|S',settings:'Settings',visual:'Visual Effects',neon:'Neon Text',gradient:'Gradient BG',glitch:'Glitch Art',beams:'Light Beams',scanlines:'Scanlines',rain:'Rain Effect',fog:'Fog Effect',stars:'Starfield',parallax:'3D Parallax',particlesSection:'Particles',particles:'Particles',particleFollow:'Follow Mouse',interaction:'Interaction',ripple:'Click Ripple',flip:'Flip Animation',sound:'Tick Sound',easterEgg:'Long Press',themeSection:'Theme',theme:'Theme Style',language:'Language',customSection:'Custom Countdown',customDate:'Target Date',customLabel:'Title Text',performance:'Performance',lowPerf:'Low Performance Mode',danmakuSection:'?? Danmaku',danmakuToggle:'Show Danmaku',danmakuPlaceholder:'Send a danmaku...',danmakuSend:'Send',danmakuHint:'≤50 chars · Filtered'},
+  ja:{title:'Grand Theft Auto VI',days:'日',hours:'時',min:'分',sec:'秒',platform:'PS5 · Xbox Series X|S',settings:'設定',visual:'ビジュアルエフェクト',neon:'ネオンテキスト',gradient:'グラデーション',glitch:'グリッチアート',beams:'光線エフェクト',scanlines:'スキャンライン',rain:'雨エフェクト',fog:'霧エフェクト',stars:'星空',parallax:'3Dパララックス',particlesSection:'パーティクル',particles:'パーティクル',particleFollow:'マウス追従',interaction:'インタラクション',ripple:'リップル',flip:'フリップ',sound:'ティック音',easterEgg:'長押し',themeSection:'テーマ',theme:'テーマスタイル',language:'言語',customSection:'カスタムカウントダウン',customDate:'目標日',customLabel:'タイトル',performance:'パフォーマンス',lowPerf:'低パフォーマンスモード',danmakuSection:'?? ダンマク',danmakuToggle:'ダンマク表示',danmakuPlaceholder:'ダンマクを送信...',danmakuSend:'送信',danmakuHint:'≤50字 · フィルター済み'},
+  ko:{title:'Grand Theft Auto VI',days:'일',hours:'시',min:'분',sec:'초',platform:'PS5 · Xbox Series X|S',settings:'설정',visual:'비주얼 이펙트',neon:'네온 텍스트',gradient:'그라데이션',glitch:'글리치 아트',beams:'광선 이펙트',scanlines:'스캔라인',rain:'비 효과',fog:'안개 효과',stars:'별밭',parallax:'3D 패럴랙스',particlesSection:'파티클',particles:'파티클',particleFollow:'마우스 추적',interaction:'인터랙션',ripple:'리플',flip:'플립',sound:'틱 사운드',easterEgg:'길게 누르기',themeSection:'테마',theme:'테마 스타일',language:'언어',customSection:'커스텀 카운트다운',customDate:'목표 날짜',customLabel:'제목',performance:'성능',lowPerf:'저성능 모드',danmakuSection:'?? 다마쿠',danmakuToggle:'다마쿠 표시',danmakuPlaceholder:'다마쿠 보내기...',danmakuSend:'보내기',danmakuHint:'≤50자 · 필터링됨'}
+};
+let currentLang='en';
+function applyLanguage(lang){currentLang=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(i18n[lang]&&i18n[lang][k])el.textContent=i18n[lang][k]})}
+// ── DOM 缓存（减少查询） ──
+const $=id=>document.getElementById(id);
+const dEl=$('d'),hEl=$('h'),mEl=$('m'),sEl=$('s');
+const bgEls=[$('bg0'),$('bg1'),$('bg2')];
+const orb=$('orb'),egg=$('easter-egg');
+const settingsBtn=$('settings-btn'),settingsPanel=$('settings-panel');
+const volumeControl=$('volume-control'),volumeIcon=$('volume-icon'),volumeSlider=$('volume-slider'),volumeValue=$('volume-value');
+const milestoneOverlay=$('milestone-overlay'),milestoneText=$('milestone-text'),milestoneParticles=$('milestone-particles');
+const pwaInstall=$('pwa-install'),pwaInstallBtn=$('pwa-install-btn'),pwaInstallClose=$('pwa-install-close');
+const shortcutsHint=$('shortcuts-hint');
+const widgetModal=$('widget-modal');
+
+
+
+// ── 功能状态 ──
+const F={neon:true,gradient:true,glitch:false,beams:false,scanlines:true,rain:false,fog:false,stars:false,parallax:false,particles:false,particleFollow:false,ripple:false,flip:false,sound:false,easterEgg:false,lowPerf:false,danmaku:true};
+let targetTime=new Date('2026-11-19T00:00:00+08:00').getTime();
+let customLabel='Grand Theft Auto VI';
+
+
+// === Volume Control ===
+
+let volume=55;
+let volumeHideTimer;
+function showVolumeControl(){ return; // 音乐功能已启用
+  volumeControl.classList.add('visible');
+  clearTimeout(volumeHideTimer);
+  volumeHideTimer=setTimeout(()=>volumeControl.classList.remove('visible'),3000);
+}
+volumeIcon.addEventListener('click',()=>{
+  volume=volume>0?0:55;
+  volumeSlider.value=volume;
+  volumeValue.textContent=volume+'%';
+  volumeIcon.textContent=volume===0?'\u{1f507}':volume<50?'\u{1f509}':'\u{1f50a}';
+SynthEngine.setVolume(volume);
+  saveSettings();
+});
+volumeSlider.addEventListener('input',e=>{
+  volume=parseInt(e.target.value);
+  volumeValue.textContent=volume+'%';
+  volumeIcon.textContent=volume===0?'\u{1f507}':volume<50?'\u{1f509}':'\u{1f50a}';
+SynthEngine.setVolume(volume);
+  saveSettings();
+  showVolumeControl();
+});
+
+// === Milestone Effects ===
+
+let lastMilestone=0;
+const MILESTONES=[100,30,7,3,1];
+function checkMilestone(days){
+  if(days<=0)return;
+  for(const m of MILESTONES){
+    if(days===m&&lastMilestone!==m){lastMilestone=m;triggerMilestone(m);break;}
+  }
+}
+function triggerMilestone(days){
+  milestoneText.textContent=days===1?'\u{1f389} GTA VI \u660e\u5929\u53d1\u552e\uff01':'\u{1f389} \u8fd8\u6709'+days+'\u5929\uff01';
+  milestoneOverlay.classList.add('active');
+  setTimeout(()=>milestoneOverlay.classList.remove('active'),2500);
+  milestoneParticles.innerHTML='';
+  const colors=['#FF6B9D','#8B5CF6','#00CED1','#FF8C42','#FFD700'];
+  for(let i=0;i<50;i++){
+    const p=document.createElement('div');
+    p.className='milestone-particle';
+    const c=colors[Math.floor(Math.random()*colors.length)];
+    p.style.cssText='left:'+Math.random()*100+'%;top:'+(50+Math.random()*30)+'%;background:'+c+';animation-delay:'+Math.random()*0.5+'s;animation-duration:'+(2+Math.random()*2)+'s;box-shadow:0 0 10px '+c;
+    milestoneParticles.appendChild(p);
+  }
+  setTimeout(()=>milestoneParticles.innerHTML='',3000);
+  if(F.sound)playCelebration();
+}
+function playCelebration(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  [523.25,659.25,783.99,1046.50].forEach((freq,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.connect(g);g.connect(audioCtx.destination);
+    o.frequency.value=freq;o.type='sine';
+    g.gain.setValueAtTime(0.1,audioCtx.currentTime+i*0.15);
+    g.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+i*0.15+0.3);
+    o.start(audioCtx.currentTime+i*0.15);o.stop(audioCtx.currentTime+i*0.15+0.3);
+  });
+}
+
+// === PWA Support ===
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredPrompt=e;
+  setTimeout(()=>{if(deferredPrompt)pwaInstall.classList.add('visible');},3000);
+});
+pwaInstallBtn.addEventListener('click',async()=>{
+  if(!deferredPrompt)return;
+  deferredPrompt.prompt();const{outcome}=await deferredPrompt.userChoice;
+  deferredPrompt=null;pwaInstall.classList.remove('visible');
+});
+pwaInstallClose.addEventListener('click',()=>pwaInstall.classList.remove('visible'));
+window.addEventListener('appinstalled',()=>{pwaInstall.classList.remove('visible');deferredPrompt=null;});
+
+function loadSettings(){
+  const s=localStorage.getItem('gta6-settings');
+  if(s){
+    try{
+      const p=JSON.parse(s);
+      // 校验 features
+      if(p.features && typeof p.features === 'object'){
+        Object.keys(p.features).forEach(k=>{
+          if(typeof p.features[k] === 'boolean') F[k] = p.features[k];
+        });
+      }
+      // 校验 theme
+      if(p.theme && ['dark','light','midnight'].includes(p.theme)){
+        document.body.className='theme-'+p.theme;
+      }
+      // 校验 lang
+      if(p.lang && typeof p.lang === 'string'){
+        applyLanguage(p.lang);
+      }
+      // 校验 targetTime
+      if(p.targetTime && typeof p.targetTime === 'number' && p.targetTime > 0){
+        targetTime = p.targetTime;
+      }
+      // 校验 customLabel
+      if(p.customLabel && typeof p.customLabel === 'string' && p.customLabel.length < 50){
+        customLabel = p.customLabel;
+      }
+      // 校验 volume
+      if(p.volume !== undefined && typeof p.volume === 'number' && p.volume >= 0 && p.volume <= 100){
+        volume = p.volume;
+        volumeSlider.value = volume;
+        volumeValue.textContent = volume+'%';
+        volumeIcon.textContent = volume===0?'\u{1f507}':volume<50?'\u{1f509}':'\u{1f50a}';
+      }
+    }catch(e){
+      console.warn('Invalid settings in localStorage, clearing...');
+      localStorage.removeItem('gta6-settings');
+    }
+  }
+  applySettings();updateUI();
+}
+function saveSettings(){
+  localStorage.setItem('gta6-settings',JSON.stringify({features:F,theme:document.body.className.replace('theme-',''),lang:currentLang,targetTime,customLabel,volume:volume}));
+}
+function updateUI(){
+  document.querySelectorAll('.toggle').forEach(t=>{const f=t.dataset.feature;if(f&&F[f]!==undefined)t.classList.toggle('active',F[f])});
+  $('theme-select').value=document.body.className.replace('theme-','');
+  $('language-select').value=currentLang;
+  const d=new Date(targetTime),loc=new Date(d.getTime()-d.getTimezoneOffset()*60000);
+  $('custom-date').value=loc.toISOString().slice(0,16);
+  $('custom-label').value=customLabel;
+}
+function applySettings(){
+  const numWraps=document.querySelectorAll('.num-wrap');
+  for(let i=0;i<numWraps.length;i++){numWraps[i].classList.toggle('neon',F.neon);numWraps[i].classList.toggle('glitch',F.glitch)}
+  $('gradient-bg').classList.toggle('active',F.gradient);
+  $('light-beams').classList.toggle('active',F.beams);
+  $('scanlines').classList.toggle('active',F.scanlines);
+  $('rain').classList.toggle('active',F.rain);
+  $('fog').classList.toggle('active',F.fog);
+  $('stars').classList.toggle('active',F.stars);
+  $('parallax-wrap').style.transform=F.parallax?'':'none';
+  $('particles').style.display=F.particles?'block':'none';
+  document.querySelector('.label').textContent=customLabel;
+  const particleEls=document.querySelectorAll('.particle');
+  for(let i=0;i<particleEls.length;i++)particleEls[i].style.animationPlayState=F.lowPerf?'paused':'running';
+  if(typeof DanmakuEngine!=='undefined')DanmakuEngine.toggle(F.danmaku);
+}
+
+// ── 倒计时 ──
+
+let prev={d:'',h:'',m:'',s:''};
+const tick = () => {
+  const now=Date.now();let diff=Math.max(0,targetTime-now);
+  const days=Math.floor(diff/864e5);diff%=864e5;
+  const hours=Math.floor(diff/36e5);diff%=36e5;
+  const mins=Math.floor(diff/6e4);diff%=6e4;
+  const secs=Math.floor(diff/1e3);
+  const nD=String(days).padStart(2,'0'),nH=String(hours).padStart(2,'0'),nM=String(mins).padStart(2,'0'),nS=String(secs).padStart(2,'0');
+  if(F.flip){
+    if(nD!==prev.d)dEl.parentElement.classList.add('flip-anim');
+    if(nH!==prev.h)hEl.parentElement.classList.add('flip-anim');
+    if(nM!==prev.m)mEl.parentElement.classList.add('flip-anim');
+    if(nS!==prev.s)sEl.parentElement.classList.add('flip-anim');
+    const numWraps=document.querySelectorAll('.num-wrap');
+    setTimeout(()=>{for(let i=0;i<numWraps.length;i++)numWraps[i].classList.remove('flip-anim')},400);
+  }
+  dEl.textContent=nD;hEl.textContent=nH;mEl.textContent=nM;sEl.textContent=nS;
+  prev={d:nD,h:nH,m:nM,s:nS};
+  if(F.sound)playTick();
+  checkMilestone(days);
+}
+tick();setInterval(tick,1000);
+
+// ── 音效 ──
+let audioCtx=null;
+function playTick(){
+  if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+  o.connect(g);g.connect(audioCtx.destination);
+  o.frequency.value=800;o.type='sine';
+  g.gain.setValueAtTime(.05,audioCtx.currentTime);
+  g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+.1);
+  o.start(audioCtx.currentTime);o.stop(audioCtx.currentTime+.1);
+}
+
+// ── 鼠标光晕 + 视差 ──
+let mouseX=0,mouseY=0;
+document.addEventListener('mousemove',e=>{
+  mouseX=e.clientX;mouseY=e.clientY;
+  orb.style.left=mouseX+'px';orb.style.top=mouseY+'px';
+  if(F.parallax){
+    const x=(e.clientX/window.innerWidth-.5)*30,y=(e.clientY/window.innerHeight-.5)*30;
+    $('parallax-wrap').style.transform=`translate(${-x}px,${-y}px)`;
+  }
+});
+
+// ── 粒子 ──
+const gtaC=['rgba(255,107,157,.35)','rgba(255,20,147,.3)','rgba(155,89,182,.35)','rgba(139,92,246,.3)','rgba(255,140,66,.35)','rgba(255,165,0,.3)','rgba(0,206,209,.3)','rgba(32,178,170,.25)'];
+const particles=[];
+const pc=$("particles");
+(function(){const frag=document.createDocumentFragment();for(let i=0;i<40;i++){const p=document.createElement('div');p.className='particle';const sz=Math.random()*8+4,c=gtaC[Math.floor(Math.random()*gtaC.length)],l=Math.random()*100,dur=Math.random()*25+18,del=Math.random()*15;p.style.cssText=`width:${sz}px;height:${sz}px;background:${c};left:${l}%;animation-duration:${dur}s;animation-delay:-${del}s;box-shadow:0 0 ${sz*3}px ${sz}px ${c}`;frag.appendChild(p);particles.push({el:p,size:sz})}pc.appendChild(frag)})()
+function animateParticles(){
+  if(F.particleFollow&&F.particles&&!F.lowPerf){
+    for(let i=0;i<particles.length;i++){
+      const p=particles[i];
+      const r=p.el.getBoundingClientRect(),px=r.left+r.width/2,py=r.top+r.height/2;
+      const dx=mouseX-px,dy=mouseY-py,dist=Math.sqrt(dx*dx+dy*dy);
+      if(dist<200){const f=(200-dist)/200;p.el.style.transform=`translate(${dx*f*.1}px,${dy*f*.1}px)`}
+      else p.el.style.transform='';
+    }
+  }
+  requestAnimationFrame(animateParticles);
+}
+animateParticles();
+
+// ── 点击波纹 ──
+document.addEventListener('click',e=>{
+  if(!F.ripple)return;
+  const cols=['var(--accent1)','var(--accent2)','#00CED1','#FF8C42'];
+  const c=cols[Math.floor(Math.random()*cols.length)];
+  const r=document.createElement('div');r.className='ripple';
+  r.style.cssText=`left:${e.clientX-25}px;top:${e.clientY-25}px;width:50px;height:50px;border:2px solid ${c};box-shadow:0 0 20px ${c}`;
+  document.body.appendChild(r);setTimeout(()=>r.remove(),800);
+});
+
+// ── 长按彩蛋 ──
+let lpTimer=null;
+document.addEventListener('mousedown',()=>{if(!F.easterEgg)return;lpTimer=setTimeout(()=>{egg.classList.add('active');setTimeout(()=>egg.classList.remove('active'),1000)},1000)});
+document.addEventListener('mouseup',()=>clearTimeout(lpTimer));
+
+// ── 光束 ──
+const bc=$('light-beams'),bCols=['var(--accent1)','var(--accent2)','#00CED1','#FF8C42'];
+(function(){const frag=document.createDocumentFragment();for(let i=0;i<8;i++){const b=document.createElement('div');b.className='beam';b.style.cssText=`left:${10+i*12}%;background:linear-gradient(to top,${bCols[i%4]},transparent);animation-delay:${i*.5}s`;frag.appendChild(b)}bc.appendChild(frag)})()
+
+// ── 雨滴 ──
+const rc=$('rain');
+(function(){const frag=document.createDocumentFragment();for(let i=0;i<80;i++){const d=document.createElement('div');d.className='raindrop';d.style.cssText=`left:${Math.random()*100}%;height:${Math.random()*80+40}px;animation:rainFall ${Math.random()*.5+.3}s linear infinite;animation-delay:${Math.random()*2}s`;frag.appendChild(d)}rc.appendChild(frag)})()
+
+// ── 星空 ──
+const sc=$('stars');
+(function(){const frag=document.createDocumentFragment();for(let i=0;i<100;i++){const s=document.createElement('div');s.className='star';s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;animation-duration:${Math.random()*3+2}s;animation-delay:${Math.random()*3}s`;frag.appendChild(s)}sc.appendChild(frag)})()
+
+// ── 背景轮播 ──
+const BASE='./';
+const images=[
+  "gta6-images/Ambrosia.jpg",
+  "gta6-images/Ambrosia_01.jpg",
+  "gta6-images/Ambrosia_02.jpg",
+  "gta6-images/Ambrosia_03.jpg",
+  "gta6-images/Ambrosia_04.jpg",
+  "gta6-images/Ambrosia_05.jpg",
+  "gta6-images/Grassrivers.jpg",
+  "gta6-images/Grassrivers_01.jpg",
+  "gta6-images/Grassrivers_02.jpg",
+  "gta6-images/Grassrivers_03.jpg",
+  "gta6-images/Grassrivers_04.jpg",
+  "gta6-images/Jason_and_Lucia_01.jpg",
+  "gta6-images/Jason_and_Lucia_02.jpg",
+  "gta6-images/Jason_and_Lucia_03.jpg",
+  "gta6-images/Leonida_Keys_01.jpg",
+  "gta6-images/Leonida_Keys_02.jpg",
+  "gta6-images/Leonida_Keys_03.jpg",
+  "gta6-images/Leonida_Keys_04.jpg",
+  "gta6-images/Leonida_Keys_05.jpg",
+  "gta6-images/Mount_Kalaga.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_01.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_02.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_03.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_04.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_05.jpg",
+  "gta6-images/Mount_Kalaga_National_Park_06.jpg",
+  "gta6-images/Official_Cover_Art.jpg",
+  "gta6-images/Port_Gellhorn.jpg",
+  "gta6-images/Port_Gellhorn_01.jpg",
+  "gta6-images/Port_Gellhorn_02.jpg",
+  "gta6-images/Port_Gellhorn_03.jpg",
+  "gta6-images/Port_Gellhorn_04.jpg",
+  "gta6-images/Port_Gellhorn_05.jpg",
+  "gta6-images/Vice_City_01.jpg",
+  "gta6-images/Vice_City_02.jpg",
+  "gta6-images/Vice_City_03.jpg",
+  "gta6-images/Vice_City_04.jpg",
+  "gta6-images/Vice_City_05.jpg",
+  "gta6-images/Vice_City_06.jpg",
+  "gta6-images/Vice_City_07.jpg",
+  "gta6-images/Vice_City_08.jpg",
+  "gta6-images/Vice_City_09.jpg"
+];
+
+let pool=[...images],active=0;const preloaded=new Map();
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function preload(u){if(preloaded.has(u))return preloaded.get(u);const img=new Image();img.src=u;preloaded.set(u,img);return img}
+function preloadNext(n){for(let i=0;i<n&&i<pool.length;i++)preload(BASE+pool[pool.length-1-i])}
+function next(){
+  if(pool.length===0){pool=shuffle([...images]);preloaded.clear()}
+  const url=BASE+pool.pop();preloadNext(3);const nxt=(active+1)%3;
+  const img=preloaded.get(url)||preload(url);
+  function show(){bgEls[nxt].style.backgroundImage=`url(${url})`;bgEls[nxt].classList.add('active');bgEls[active].classList.remove('active');active=nxt}
+  if(img.complete)show();else{img.onload=show;setTimeout(show,3000)}
+}
+pool=shuffle([...images]);const firstUrl=BASE+pool.pop();preloadNext(3);const firstImg=preload(firstUrl);
+function initShow(){bgEls[0].style.backgroundImage=`url(${firstUrl})`;bgEls[0].classList.add('active')}
+if(firstImg.complete)initShow();else{firstImg.onload=initShow;setTimeout(initShow,3000)}
+setInterval(next,8000);
+
+// ── 控制面板 ──
+
+settingsBtn.addEventListener('click',e=>{e.stopPropagation();settingsPanel.classList.toggle('open')});
+document.addEventListener('click',e=>{if(!settingsPanel.contains(e.target)&&e.target!==settingsBtn)settingsPanel.classList.remove('open')});
+document.querySelectorAll('.toggle').forEach(t=>{t.addEventListener('click',()=>{const f=t.dataset.feature;if(f&&F[f]!==undefined){F[f]=!F[f];t.classList.toggle('active',F[f]);applySettings();saveSettings()}})});
+$('theme-select').addEventListener('change',e=>{document.body.className='theme-'+e.target.value;applySettings();saveSettings()});
+$('language-select').addEventListener('change',e=>{applyLanguage(e.target.value);saveSettings()});
+$('custom-date').addEventListener('change',e=>{targetTime=new Date(e.target.value).getTime();saveSettings()});
+$('custom-label').addEventListener('input',e=>{customLabel=e.target.value||'Grand Theft Auto VI';applySettings();saveSettings()});
+
+// ── 全屏 ──
+$('fullscreen-btn').addEventListener('click',()=>{
+  if(!document.fullscreenElement){document.documentElement.requestFullscreen();document.body.classList.add('fullscreen')}
+  else{document.exitFullscreen();document.body.classList.remove('fullscreen')}
+});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)document.body.classList.remove('fullscreen')});
+
+// ── 分享 ──
+$('share-btn').addEventListener('click',async()=>{
+  if(navigator.share){try{await navigator.share({title:'GTA VI Countdown',text:'距离 GTA VI 发售还有...',url:window.location.href})}catch(e){}}
+  else{await navigator.clipboard.writeText(window.location.href);const b=$('share-btn');b.textContent='✓';setTimeout(()=>b.textContent='↗',2000)}
+});
+
+// ── Widget 弹窗 ──
+$('widget-btn').addEventListener('click',()=>widgetModal.classList.add('visible'));
+$('widget-copy').addEventListener('click',function(){navigator.clipboard.writeText(document.querySelector('#widget-modal pre code').textContent);this.textContent='已复制!';setTimeout(()=>this.textContent='复制代码',2000)});
+$('widget-close').addEventListener('click',()=>widgetModal.classList.remove('visible'));
+
+// ── GTA6 Synthwave 音乐引擎 ──
+let musicPlaying=false,musicNodes=[],musicTimer=null;
+
+// ═══════════════════════════════════════════════════════════════
+//  MULTI-TRACK SYNTHWAVE ENGINE — GTA VI style
+// ═══════════════════════════════════════════════════════════════
+const TRACKS=[
+  {id:'vice-beach',name:'Vice Beach',icon:'🏖️',bpm:120,
+   type:'mp3',url:'music/vice_beach.mp3'},
+  {id:'neon-rush',name:'Neon Rush',icon:'⚡',bpm:128,
+   type:'mp3',url:'music/neon_rush.mp3'}
+];
+
+let currentTrackIdx=0;
+
+
+// ── AudioBuffer 缓存 ──
+let tickBuffer=null,snareBuffer=null,hihatBuffer=null;
+function createNoiseBuffer(duration,sampleRate){
+  const bufSize=sampleRate*duration;
+  const buf=new AudioBuffer(1,bufSize,sampleRate);
+  const data=buf.getChannelData(0);
+  for(let i=0;i<bufSize;i++)data[i]=Math.random()*2-1;
+  return buf;
+}
+function ensureBuffers(){
+  if(!audioCtx)return;
+  if(!snareBuffer)snareBuffer=createNoiseBuffer(0.15,audioCtx.sampleRate);
+  if(!hihatBuffer)hihatBuffer=createNoiseBuffer(0.05,audioCtx.sampleRate);
+}
+
+const SynthEngine={
+  ctx:null,masterGain:null,audioElement:null,
+  init(){
+    this.ctx=audioCtx;
+    this.masterGain=this.ctx.createGain();
+    this.masterGain.gain.value=0.55;
+    this.masterGain.connect(this.ctx.destination);
+  },
+  start(){
+    this.init();
+    const track=TRACKS[currentTrackIdx];
+    if(track.type==='mp3'){
+      this.playMP3(track.url);
+    }
+  },
+  playMP3(url){
+    if(this.audioElement){
+      this.audioElement.pause();
+      this.audioElement=null;
+    }
+    this.audioElement=new Audio();
+    this.audioElement.src=url;
+    this.audioElement.loop=true;
+    const source=this.ctx.createMediaElementSource(this.audioElement);
+    source.connect(this.masterGain);
+    this.audioElement.play().catch(e=>console.log('播放失败:',e));
+    musicPlaying=true;
+  },
+  stop(){
+    if(this.audioElement){
+      this.audioElement.pause();
+      this.audioElement.currentTime=0;
+    }
+    musicPlaying=false;
+  },
+  setVolume(vol){
+    if(this.masterGain){
+      this.masterGain.gain.value=vol/100;
+    }
+  }
+};
+
+// ═══════════════════════════════════════════════════════════════
+//  TRACK SELECTOR UI
+// ═══════════════════════════════════════════════════════════════
+const trackSelectorEl=document.getElementById('track-selector');
+const trackNowEl=document.getElementById('track-now');
+const musicBtn=document.getElementById('music-btn');
+// 音乐播放时显示音量控制
+
+
+let trackSelectorVisible=false;
+
+function renderTrackList(){
+  trackSelectorEl.innerHTML=TRACKS.map((t,i)=>`
+    <div class="track-item${i===currentTrackIdx?' active':''}" data-idx="${i}">
+      <div class="track-icon">${t.icon}</div>
+      <div class="track-info">
+        <div class="track-name">${t.name}</div>
+        <div class="track-meta">${t.bpm} BPM</div>
+      </div>
+    </div>`).join('');
+  trackSelectorEl.querySelectorAll('.track-item').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const idx=parseInt(el.dataset.idx);
+      switchTrack(idx);
+    });
+  });
+}
+
+function updateNowPlaying(){
+  const t=TRACKS[currentTrackIdx];
+  if(musicPlaying){
+    trackNowEl.textContent=t.icon+' '+t.name;
+    trackNowEl.classList.add('visible');
+  }else{
+    trackNowEl.classList.remove('visible');
+  }
+}
+let musicHintShown=false;
+function showMusicHint(){
+  if(musicHintShown)return;
+  musicHintShown=true;
+  const hint=document.getElementById('music-hint');
+  hint.classList.add('visible');
+  setTimeout(()=>hint.classList.remove('visible'),4000);
+}
+
+function switchTrack(idx){
+  const wasPlaying=musicPlaying;
+  if(wasPlaying) SynthEngine.stop();
+  currentTrackIdx=idx;
+  renderTrackList();
+  updateNowPlaying();
+  if(wasPlaying){
+    // Small delay to let old nodes fade
+    setTimeout(()=>{
+      if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended')audioCtx.resume();
+      SynthEngine.start();
+      musicBtn.classList.add('active');musicBtn.textContent='♫';
+      updateNowPlaying();
+    },350);
+  }
+}
+
+function toggleTrackSelector(){
+  trackSelectorVisible=!trackSelectorVisible;
+  if(trackSelectorVisible){
+    renderTrackList();
+    trackSelectorEl.classList.add('visible');
+  }else{
+    trackSelectorEl.classList.remove('visible');
+  }
+}
+
+// Close selector when clicking outside
+document.addEventListener('click',(e)=>{
+  if(trackSelectorVisible && !trackSelectorEl.contains(e.target) && e.target!==musicBtn && !musicBtn.contains(e.target)){
+    trackSelectorVisible=false;
+    trackSelectorEl.classList.remove('visible');
+  }
+});
+
+// Music button: single click = play/pause, right-click or long press = toggle selector
+
+musicBtn.addEventListener('click',function(e){
+  // 音乐播放/暂停
+  if(musicPlaying){
+    SynthEngine.stop();
+    this.classList.remove('active');
+    this.textContent='♪';
+    updateNowPlaying();
+  }else{
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+    SynthEngine.start();
+    this.classList.add('active');
+    this.textContent='♫';
+    updateNowPlaying();
+    showMusicHint();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// 音乐功能已启用
+// // // 音乐功能已启用
+musicBtn.addEventListener('contextmenu',function(e){
+  e.preventDefault();
+  toggleTrackSelector();
+});
+
+// Double-click on music button opens track selector
+// // 音乐功能已启用
+musicBtn.addEventListener('dblclick',function(e){
+  e.preventDefault();
+  e.stopPropagation();
+  toggleTrackSelector();
+});
+
+renderTrackList();
+
+// ── 键盘快捷键 ──
+let shortcutsTimeout;
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+  switch(e.key.toLowerCase()){
+    case 'f':e.preventDefault();$('fullscreen-btn').click();break;
+    case 'm':e.preventDefault();break; // 音乐功能已启用
+    case 's':if(!e.ctrlKey&&!e.metaKey){e.preventDefault();$('share-btn').click()}break;
+    case '?':const h=shortcutsHint;h.classList.toggle('visible');clearTimeout(shortcutsTimeout);shortcutsTimeout=setTimeout(()=>h.classList.remove('visible'),3000);break;
+  }
+});
+
+// ── 手势支持 ──
+let touchStartX=0,touchStartY=0;
+document.addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY});
+document.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-touchStartX,dy=e.changedTouches[0].clientY-touchStartY;
+  if(Math.abs(dx)>100&&Math.abs(dy)<50){
+    // 左右滑动切换背景
+    if(dx>0)next();else{pool=shuffle([...images]);next()}
+  }
+});
+
+// ── 懒加载（低性能模式下暂停不可见动画） ──
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{e.target.style.animationPlayState=F.lowPerf?'paused':'running'})
+},{threshold:0});
+
+
+// ═══════════════════════════════════════════════════════════════
+//  弹幕引擎
+// ═══════════════════════════════════════════════════════════════
+const DanmakuEngine = {
+  container: null,
+  toast: null,
+  apiBase: '/danmaku/api/',
+  active: true,
+  pool: [],
+  running: [],
+  maxOnScreen: 12,
+  tracks: 10,
+  trackY: [],
+  colors: ['#FF6B9D','#8B5CF6','#00CED1','#FF8C42','#FFD700','#FF1493','#7B68EE','#00FF7F','#FF4500','#FFFFFF'],
+  selectedColor: '#FF6B9D',
+  loadTimer: null,
+  cycleInterval: 15000,
+
+  init() {
+    this.container = document.getElementById('danmaku-container');
+    this.toast = document.getElementById('danmaku-toast');
+    if (!this.container) return;
+    for (let i = 0; i < this.tracks; i++) this.trackY.push(0);
+    this.renderColors();
+    const input = document.getElementById('danmaku-input');
+    const sendBtn = document.getElementById('danmaku-send');
+    if (sendBtn) sendBtn.addEventListener('click', () => this.submit());
+    if (input) input.addEventListener('keydown', (e) => { if (e.key === 'Enter') this.submit(); });
+    this.loadDanmaku();
+    this.loadTimer = setInterval(() => this.loadDanmaku(), this.cycleInterval);
+    if (F.danmaku === undefined) F.danmaku = true;
+    this.toggle(F.danmaku);
+  },
+
+  renderColors() {
+    const wrap = document.getElementById('danmaku-colors');
+    if (!wrap) return;
+    wrap.innerHTML = this.colors.map(c =>
+      '<div class="danmaku-color' + (c === this.selectedColor ? ' selected' : '') + '" style="background:' + c + '" data-color="' + c + '"></div>'
+    ).join('');
+    wrap.querySelectorAll('.danmaku-color').forEach(el => {
+      el.addEventListener('click', () => {
+        this.selectedColor = el.dataset.color;
+        wrap.querySelectorAll('.danmaku-color').forEach(e => e.classList.remove('selected'));
+        el.classList.add('selected');
+      });
+    });
+  },
+
+  toggle(on) {
+    this.active = on;
+    this.container.classList.toggle('active', on);
+    if (!on) { this.container.innerHTML = ''; this.running = []; }
+  },
+
+  async loadDanmaku() {
+    try {
+      const resp = await fetch(this.apiBase + 'random?count=' + this.maxOnScreen);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      if (Array.isArray(data) && data.length > 0) { this.pool = data; this.launchBatch(); }
+    } catch (e) {}
+  },
+
+  launchBatch() {
+    if (!this.active || this.pool.length === 0) return;
+    const batch = this.pool.splice(0, this.maxOnScreen);
+    batch.forEach((item, i) => { setTimeout(() => this.launchOne(item), i * 150); });
+  },
+
+  launchOne(item) {
+    if (!this.active) return;
+    const el = document.createElement('div');
+    el.className = 'danmaku-item';
+    el.textContent = item.text;
+    if (item.city) {
+      const cityEl = document.createElement('span');
+      cityEl.className = 'danmaku-city';
+      cityEl.textContent = item.city;
+      el.appendChild(cityEl);
+    }
+    const trackIdx = Math.floor(Math.random() * this.tracks);
+    const trackHeight = window.innerHeight / this.tracks;
+    const y = trackIdx * trackHeight + Math.random() * (trackHeight - 20);
+    const duration = 10;
+    const fontSize = 13 + Math.floor(Math.random() * 6);
+    el.style.cssText = 'top:' + y + 'px;right:0;color:' + (item.color || this.selectedColor) + ';font-size:' + fontSize + 'px;animation-duration:' + duration + 's';
+    this.container.appendChild(el);
+    this.running.push(el);
+    el.addEventListener('animationend', () => { el.remove(); const idx = this.running.indexOf(el); if (idx > -1) this.running.splice(idx, 1); });
+    setTimeout(() => { if (el.parentNode) { el.remove(); const idx = this.running.indexOf(el); if (idx > -1) this.running.splice(idx, 1); } }, (duration + 1) * 1000);
+  },
+
+  async submit() {
+    const input = document.getElementById('danmaku-input');
+    const sendBtn = document.getElementById('danmaku-send');
+    if (!input || !sendBtn) return;
+    const text = input.value.trim();
+    if (!text) return;
+    if (text.length > 50) { this.showToast('\u8bc4\u8bba\u4e0d\u80fd\u8d85\u8fc750\u4e2a\u5b57\u7b26', true); return; }
+    sendBtn.disabled = true;
+    try {
+      const resp = await fetch(this.apiBase + 'submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: text, color: this.selectedColor })
+      });
+      const data = await resp.json();
+      if (data.success) {
+        input.value = '';
+        this.showToast('\u2713 \u5df2\u53d1\u9001');
+        this.launchOne({text: text, color: this.selectedColor});
+        this.loadDanmaku();
+        this.updateCount();
+      } else {
+        this.showToast(data.error || '\u53d1\u9001\u5931\u8d25', true);
+      }
+    } catch (e) {
+      this.showToast('\u7f51\u7edc\u9519\u8bef', true);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  },
+
+  showToast(msg, isError) {
+    if (!this.toast) return;
+    this.toast.textContent = msg;
+    this.toast.className = 'danmaku-toast show' + (isError ? ' error' : '');
+    setTimeout(() => { this.toast.className = 'danmaku-toast'; }, 2000);
+  },
+
+  async updateCount() {
+    try {
+      const resp = await fetch(this.apiBase + 'stats');
+      const data = await resp.json();
+      const el = document.getElementById('danmaku-count');
+      if (el) el.textContent = data.total + ' \u6761\u7559\u8a00 \u00b7 ' + data.files + ' \u4e2a\u6587\u4ef6';
+    } catch (e) {}
+  }
+};
+
+// ── 初始化 ──
+DanmakuEngine.init();
+loadSettings();
+</script>
+</body>
+</html>
