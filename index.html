@@ -42,7 +42,7 @@ body.theme-retro{--bg:#1a1a2e;--accent1:#ff6b35;--accent2:#f7c948}
 .content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .label{font-size:clamp(11px,1.4vw,14px);letter-spacing:.35em;text-transform:uppercase;color:rgba(255,255,255,.45);margin-bottom:32px;font-weight:300}
 
-.unit{display:flex;flex-direction:column;align-items:center}
+
 
 .num-wrap::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(255,255,255,.1),transparent,rgba(255,255,255,.05),transparent);animation:glassShine 8s linear infinite;pointer-events:none;opacity:.6}
 .num-wrap::before{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.4) 0%,rgba(255,255,255,.1) 40%,transparent 100%);pointer-events:none;border-radius:20px 20px 0 0}
@@ -52,8 +52,8 @@ body.theme-retro{--bg:#1a1a2e;--accent1:#ff6b35;--accent2:#f7c948}
 @keyframes glitchText{0%,95%,100%{transform:none;opacity:1}96%{transform:translate(-2px,1px) skewX(1deg);opacity:.8}97%{transform:translate(2px,-1px) skewX(-1deg);opacity:.9}98%{transform:translate(-1px,2px);opacity:.85}}
 .flip-anim 
 @keyframes flipNum{0%{transform:rotateX(-90deg);opacity:0}100%{transform:rotateX(0);opacity:1}}
-.unit-label{font-size:clamp(8px,.9vw,10px);letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.3);margin-top:8px;font-weight:300}
-.dot{font-size:clamp(28px,6vw,72px);font-weight:600;background:linear-gradient(180deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,.1) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px;animation:breathe 3s ease-in-out infinite;will-change:opacity}
+
+
 @keyframes breathe{0%,100%{opacity:.5}50%{opacity:1}}
 .date{margin-top:40px;font-size:clamp(11px,1.2vw,13px);color:rgba(255,255,255,.25);letter-spacing:.15em;font-weight:300}
 .hint{position:fixed;bottom:24px;font-size:11px;color:rgba(255,255,255,.15);letter-spacing:.1em;z-index:2}
@@ -162,226 +162,140 @@ body.fullscreen:hover #settings-btn,body.fullscreen:hover #toolbar,body.fullscre
 @keyframes glassShine{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
 
 
-/* ═══ Apple Liquid Glass — Countdown Clock ═══ */
-.countdown{display:flex;gap:clamp(14px,3.2vw,48px);align-items:center;perspective:1200px}
+
+
+/* ═══ Countdown · Refined Glass Clock ═══ */
+.countdown{
+  display:flex;align-items:center;justify-content:center;
+  gap:clamp(10px,2.4vw,28px);
+  margin:28px 0 18px;
+  position:relative;z-index:5;
+}
+.unit{
+  display:flex;flex-direction:column;align-items:center;
+  gap:10px;
+}
 .num-wrap{
   position:relative;
-  padding:clamp(10px,1.4vw,20px) clamp(14px,2vw,28px);
-  border-radius:28px;
-  background:
-    radial-gradient(120% 80% at 30% 20%, rgba(255,255,255,0.28) 0%, transparent 45%),
-    radial-gradient(80% 60% at 70% 80%, rgba(180,220,255,0.18) 0%, transparent 50%),
-    linear-gradient(145deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.14) 100%);
-  backdrop-filter: blur(36px) saturate(200%) brightness(1.08) contrast(1.05);
-  -webkit-backdrop-filter: blur(36px) saturate(200%) brightness(1.08) contrast(1.05);
-  border:1px solid rgba(255,255,255,0.42);
-  box-shadow:
-    0 25px 60px rgba(0,0,0,0.45),
-    0 8px 24px rgba(0,0,0,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.65),
-    inset 0 -1px 0 rgba(0,0,0,0.12),
-    inset 0 0 40px rgba(255,255,255,0.08),
-    0 0 0 1px rgba(255,255,255,0.08);
-  overflow:hidden;
-  transform-style:preserve-3d;
-  will-change:transform,box-shadow;
-  transition:transform 0.45s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.45s ease, border-color 0.45s ease;
+  min-width:clamp(86px,18vw,132px);
+  padding:18px 10px 16px;
+  border-radius:24px;
   isolation:isolate;
+  overflow:hidden;
+  transform:translateZ(0);
+  /* clean frosted glass */
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.22) 0%,
+      rgba(255,255,255,.08) 42%,
+      rgba(255,255,255,.12) 100%);
+  backdrop-filter:blur(28px) saturate(160%);
+  -webkit-backdrop-filter:blur(28px) saturate(160%);
+  border:1px solid rgba(255,255,255,.28);
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.35),
+    0 2px 8px rgba(0,0,0,.2),
+    inset 0 1px 0 rgba(255,255,255,.45),
+    inset 0 -1px 0 rgba(0,0,0,.08);
+  transition:transform .4s cubic-bezier(.22,.9,.25,1), box-shadow .4s ease, border-color .4s ease;
 }
+/* top luminous edge — Apple-like thin light */
 .num-wrap::before{
-  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.55) 0%, transparent 28%, transparent 70%, rgba(255,255,255,0.25) 100%);
-  mix-blend-mode:soft-light;opacity:0.9;
+  content:'';position:absolute;left:12%;right:12%;top:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
+  opacity:.85;pointer-events:none;z-index:4;
 }
+/* soft top cap reflection */
 .num-wrap::after{
-  content:'';position:absolute;top:-60%;left:-60%;width:220%;height:220%;
-  background:conic-gradient(from 0deg, transparent 0 8%, rgba(255,255,255,0.22) 12%, transparent 22%, rgba(160,220,255,0.18) 35%, transparent 48%, rgba(255,255,255,0.15) 60%, transparent 78%);
-  animation:glassShine 7s linear infinite;pointer-events:none;opacity:0.75;
-  mix-blend-mode:screen;
-}
-.lg-layer{position:absolute;inset:0;pointer-events:none;border-radius:inherit;overflow:hidden;z-index:1}
-.lg-liquid{
-  position:absolute;width:70%;height:120%;left:15%;top:-10%;
-  background:
-    radial-gradient(circle at 40% 40%, rgba(255,255,255,0.35), transparent 55%),
-    radial-gradient(circle at 70% 60%, rgba(120,200,255,0.3), transparent 50%),
-    radial-gradient(circle at 30% 75%, rgba(255,160,220,0.22), transparent 45%);
-  filter:blur(18px);opacity:0.85;
-  animation:liquidMorph 8s ease-in-out infinite alternate;
-  mix-blend-mode:screen;
-}
-.lg-spec{
-  position:absolute;top:-20%;left:-40%;width:45%;height:160%;
-  background:linear-gradient(105deg, transparent 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.55) 50%, rgba(255,255,255,0) 75%, transparent 100%);
-  transform:rotate(18deg) translateX(-20%);
-  filter:blur(2px);opacity:0.9;
-  transition:left 0.2s ease-out;
-  mix-blend-mode:screen;
-}
-.lg-refract{
-  position:absolute;inset:-2%;border-radius:inherit;opacity:0.35;pointer-events:none;
-  background:
-    radial-gradient(ellipse at 20% 30%, rgba(255,80,120,0.25), transparent 40%),
-    radial-gradient(ellipse at 80% 70%, rgba(80,180,255,0.28), transparent 42%),
-    radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0.12), transparent 60%);
-  mix-blend-mode:color-dodge;
-  animation:refractShift 6s ease-in-out infinite alternate;
-}
-.lg-depth{
-  position:absolute;inset:8%;border-radius:20px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02) 45%, rgba(0,0,0,0.06));
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -2px 6px rgba(0,0,0,0.08);
-  pointer-events:none;
+  content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:3;
+  background:linear-gradient(180deg,
+    rgba(255,255,255,.28) 0%,
+    rgba(255,255,255,.05) 32%,
+    transparent 55%);
 }
 .num-wrap:hover{
-  transform:scale(1.04) translateY(-2px);
-  border-color:rgba(255,255,255,0.65);
+  transform:translateY(-3px) scale(1.03);
+  border-color:rgba(255,255,255,.45);
   box-shadow:
-    0 32px 70px rgba(0,0,0,0.5),
-    0 0 40px rgba(160,220,255,0.25),
-    inset 0 1px 0 rgba(255,255,255,0.75),
-    inset 0 0 50px rgba(255,255,255,0.12),
-    0 0 0 1px rgba(255,255,255,0.15);
+    0 28px 60px rgba(0,0,0,.42),
+    0 0 28px rgba(255,255,255,.08),
+    inset 0 1px 0 rgba(255,255,255,.6),
+    inset 0 -1px 0 rgba(0,0,0,.08);
+}
+.num-wrap.lg-splash{
+  animation:numPop .5s cubic-bezier(.2,.9,.3,1);
 }
 .num{
   position:relative;z-index:2;display:block;
-  font-size:clamp(42px,9.5vw,104px);font-weight:700;line-height:1;
-  font-variant-numeric:tabular-nums;letter-spacing:-0.03em;
-  background:linear-gradient(180deg,#ffffff 12%,#e8f6ff 42%,rgba(255,255,255,0.72) 78%,rgba(200,230,255,0.55) 100%);
+  font-size:clamp(40px,8.5vw,88px);
+  font-weight:700;
+  line-height:1;
+  letter-spacing:0.02em;
+  font-variant-numeric:tabular-nums;
+  text-align:center;
+  background:linear-gradient(180deg,#fff 0%,#f3fbff 48%,rgba(255,255,255,.72) 100%);
   -webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent;color:transparent;
-  filter:
-    drop-shadow(0 1px 0 rgba(255,255,255,0.35))
-    drop-shadow(0 2px 4px rgba(0,0,0,0.35))
-    drop-shadow(0 6px 18px rgba(0,0,0,0.45));
-  transition:transform 0.35s cubic-bezier(0.2,0.8,0.2,1), filter 0.35s ease;
+  filter:drop-shadow(0 2px 10px rgba(0,0,0,.35));
+  text-shadow:none;
 }
-.num-wrap.lg-tilt .num{transform:translateZ(28px) scale(1.02)}
-.num-wrap.lg-splash .num{animation:lgSplash 0.55s cubic-bezier(0.2,0.9,0.3,1)}
 .unit-label{
-  margin-top:10px;font-size:11px;letter-spacing:0.22em;text-transform:uppercase;
-  color:rgba(255,255,255,0.55);text-shadow:0 1px 2px rgba(0,0,0,0.4);
+  margin:0;
+  font-size:10px;
   font-weight:600;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.5);
 }
 .dot{
-  font-size:clamp(28px,5vw,56px);font-weight:300;color:rgba(255,255,255,0.35);
-  text-shadow:0 0 12px rgba(255,255,255,0.25);
-  animation:dotPulse 2s ease-in-out infinite;
-  padding-bottom:24px;
+  font-size:clamp(24px,4vw,42px);
+  font-weight:200;
+  color:rgba(255,255,255,.28);
+  padding-bottom:26px;
+  animation:dotBreathe 2.4s ease-in-out infinite;
 }
-@keyframes liquidMorph{
-  0%{transform:translate(-4%,-3%) rotate(0deg) scale(1)}
-  50%{transform:translate(6%,4%) rotate(8deg) scale(1.12)}
-  100%{transform:translate(-2%,8%) rotate(-6deg) scale(1.05)}
-}
-@keyframes refractShift{
-  0%{opacity:0.25;filter:hue-rotate(0deg)}
-  100%{opacity:0.45;filter:hue-rotate(25deg)}
-}
-@keyframes lgSplash{
-  0%{transform:scale(1.12);filter:brightness(1.4) saturate(1.3)}
-  40%{transform:scale(0.96)}
-  100%{transform:scale(1);filter:brightness(1) saturate(1)}
-}
-@keyframes dotPulse{0%,100%{opacity:0.35;transform:scale(1)}50%{opacity:0.7;transform:scale(1.08)}}
-@media (prefers-reduced-motion:reduce){
-  .num-wrap::after,.lg-liquid,.lg-refract,.dot{animation:none}
-}
-
-
-/* ═══+ Fluid highlights / caustics ═══ */
-.num-wrap .lg-fluid{
-  position:absolute;inset:-12%;z-index:0;pointer-events:none;border-radius:inherit;overflow:hidden;
-  mix-blend-mode:screen;opacity:.9;
-}
-.lg-blob{
-  position:absolute;border-radius:50%;filter:blur(22px);mix-blend-mode:screen;
-  will-change:transform;
-}
-.lg-blob.b1{width:55%;height:90%;left:8%;top:-20%;background:radial-gradient(circle,rgba(255,255,255,.55),rgba(140,220,255,.35) 40%,transparent 70%);animation:blob1 7s ease-in-out infinite}
-.lg-blob.b2{width:45%;height:80%;right:0%;top:10%;background:radial-gradient(circle,rgba(255,170,230,.4),rgba(255,255,255,.25) 45%,transparent 70%);animation:blob2 9s ease-in-out infinite}
-.lg-blob.b3{width:70%;height:60%;left:20%;bottom:-25%;background:radial-gradient(circle,rgba(120,255,220,.28),transparent 65%);animation:blob3 11s ease-in-out infinite}
-.lg-caustic{
-  position:absolute;inset:0;pointer-events:none;border-radius:inherit;z-index:3;
-  background:
-    radial-gradient(ellipse 40% 30% at var(--hx,30%) var(--hy,25%), rgba(255,255,255,.45), transparent 55%),
-    radial-gradient(ellipse 25% 40% at calc(100% - var(--hx,30%)) calc(100% - var(--hy,25%)), rgba(160,220,255,.3), transparent 50%);
-  opacity:.55;mix-blend-mode:screen;transition:opacity .2s;
+/* fluid field behind glass — one calm layer, not neon confetti */
+.lg-canvas{
+  position:absolute;inset:-8px;
+  width:calc(100% + 16px);height:calc(100% + 16px);
+  border-radius:28px;
+  z-index:0;opacity:.55;
   pointer-events:none;
+  filter:blur(0px);
 }
-.num-wrap:hover .lg-caustic{opacity:.85}
-/* flowing edge light rail */
-.lg-rail{
-  position:absolute;z-index:4;pointer-events:none;border-radius:inherit;overflow:hidden;
+/* moving specular — single slow sheen */
+.lg-sheen{
+  position:absolute;top:0;bottom:0;width:36%;
+  left:-40%;z-index:4;pointer-events:none;
+  background:linear-gradient(105deg,
+    transparent 0%,
+    rgba(255,255,255,.0) 35%,
+    rgba(255,255,255,.4) 50%,
+    rgba(255,255,255,0) 65%,
+    transparent 100%);
+  transform:skewX(-18deg);
+  animation:sheenSweep 6.5s ease-in-out infinite;
+  mix-blend-mode:screen;
 }
-.lg-rail::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),rgba(180,240,255,.7),transparent);
-  animation:railH 3.2s ease-in-out infinite;
-  filter:blur(.5px);
+@keyframes sheenSweep{
+  0%{left:-45%;opacity:0}
+  15%{opacity:.9}
+  55%{opacity:.55}
+  85%{opacity:0}
+  100%{left:105%;opacity:0}
 }
-.lg-rail::after{
-  content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:linear-gradient(180deg,transparent,rgba(255,255,255,.75),rgba(255,160,220,.55),transparent);
-  animation:railV 4.4s ease-in-out infinite;
-  filter:blur(.5px);
+@keyframes numPop{
+  0%{transform:scale(1.06)}
+  45%{transform:scale(.97)}
+  100%{transform:scale(1)}
 }
-/* double specular streaks */
-.lg-spec2{
-  position:absolute;top:-30%;left:60%;width:28%;height:180%;
-  background:linear-gradient(100deg,transparent,rgba(255,255,255,.0) 30%,rgba(255,255,255,.35) 50%,rgba(255,255,255,0) 70%);
-  transform:rotate(22deg);filter:blur(3px);opacity:.7;
-  animation:specSweep 5.5s ease-in-out infinite;mix-blend-mode:screen;pointer-events:none;
+@keyframes dotBreathe{
+  0%,100%{opacity:.3}
+  50%{opacity:.65}
 }
-/* fluid digit glow */
-.num{position:relative;z-index:2}
-.num-wrap.fluid-on .num{
-  filter:
-    drop-shadow(0 0 10px rgba(255,255,255,.35))
-    drop-shadow(0 0 28px rgba(140,220,255,.25))
-    drop-shadow(0 2px 6px rgba(0,0,0,.4));
-}
-@keyframes blob1{
-  0%{transform:translate(0,0) scale(1)}
-  33%{transform:translate(18%,12%) scale(1.2)}
-  66%{transform:translate(-8%,20%) scale(.9)}
-  100%{transform:translate(4%,-6%) scale(1.08)}
-}
-@keyframes blob2{
-  0%{transform:translate(0,0) scale(1.1)}
-  40%{transform:translate(-22%,8%) scale(.95)}
-  70%{transform:translate(10%,-14%) scale(1.25)}
-  100%{transform:translate(-5%,4%) scale(1)}
-}
-@keyframes blob3{
-  0%{transform:translate(-5%,0) scale(1)}
-  50%{transform:translate(12%,-10%) scale(1.3)}
-  100%{transform:translate(-10%,6%) scale(.95)}
-}
-@keyframes railH{
-  0%,100%{transform:translateX(-30%);opacity:.4}
-  50%{transform:translateX(40%);opacity:1}
-}
-@keyframes railV{
-  0%,100%{transform:translateY(-40%);opacity:.35}
-  50%{transform:translateY(45%);opacity:.9}
-}
-@keyframes specSweep{
-  0%{left:-30%;opacity:0}
-  20%{opacity:.8}
-  60%{opacity:.5}
-  100%{left:90%;opacity:0}
-}
-/* stronger flash on second tick */
-.num-wrap.lg-splash::after{
-  background:conic-gradient(from 40deg,transparent,rgba(255,255,255,.55),rgba(140,220,255,.4),transparent);
-  animation:glassShine .6s linear 1, splashFlash .55s ease-out;
-  opacity:1;
-}
-@keyframes splashFlash{
-  0%{filter:brightness(2.2)}
-  100%{filter:brightness(1)}
+@media (prefers-reduced-motion:reduce){
+  .lg-sheen,.dot{animation:none}
+  .num-wrap{transition:none}
 }
 
 </style>
@@ -1372,106 +1286,85 @@ loadSettings();
 </script>
 <script>
 
-// Liquid Glass clock FX
-(function(){
-  var wraps=document.querySelectorAll('.countdown .num-wrap');
-  wraps.forEach(function(w,i){
-    if(w.querySelector('.lg-layer')) return;
-    var layer=document.createElement('div');
-    layer.className='lg-layer';
-    layer.innerHTML='<div class="lg-liquid" style="animation-delay:'+(i*0.7)+'s"></div><div class="lg-depth"></div><div class="lg-refract"></div><div class="lg-spec"></div>';
-    w.insertBefore(layer,w.firstChild);
-  });
-  function setVals(){
-    ['d','h','m','s'].forEach(function(k){
-      var el=document.getElementById(k);
-      if(el) el.setAttribute('data-v', el.textContent);
-    });
-  }
-  setVals();
-  setInterval(setVals, 400);
-  var root=document.querySelector('.countdown');
-  if(!root) return;
-  root.addEventListener('pointermove', function(e){
-    var t = e.target && e.target.closest ? e.target.closest('.num-wrap') : null;
-    wraps.forEach(function(w){
-      var spec=w.querySelector('.lg-spec');
-      var r=w.getBoundingClientRect();
-      if(t===w){
-        var x=(e.clientX-r.left)/r.width;
-        var y=(e.clientY-r.top)/r.height;
-        w.classList.add('lg-tilt');
-        w.style.transform='perspective(900px) rotateY('+((x-0.5)*16).toFixed(2)+'deg) rotateX('+((0.5-y)*14).toFixed(2)+'deg) scale(1.04)';
-        if(spec) spec.style.left=(x*100-20)+'%';
-        var liq=w.querySelector('.lg-liquid');
-        if(liq) liq.style.transform='translate('+((x-0.5)*24).toFixed(1)+'%,'+((y-0.5)*18).toFixed(1)+'%)';
-      }else{
-        w.classList.remove('lg-tilt');
-        w.style.transform='';
-      }
-    });
-  });
-  root.addEventListener('pointerleave', function(){
-    wraps.forEach(function(w){ w.classList.remove('lg-tilt'); w.style.transform=''; });
-  });
-  var sec=document.getElementById('s');
-  if(sec && window.MutationObserver){
-    new MutationObserver(function(){
-      var w=sec.closest('.num-wrap');
-      if(!w) return;
-      w.classList.remove('lg-splash');
-      void w.offsetWidth;
-      w.classList.add('lg-splash');
-      setVals();
-    }).observe(sec,{childList:true,characterData:true,subtree:true});
-  }
-})();
+</script>
+<script>
 
 </script>
 <script>
 
-// Fluid highlight pass
+/* Refined glass clock + calm fluid field */
 (function(){
-  var wraps=document.querySelectorAll('.countdown .num-wrap');
-  wraps.forEach(function(w,i){
-    if(w.classList.contains('fluid-on')) return;
-    w.classList.add('fluid-on');
-    var fluid=document.createElement('div');
-    fluid.className='lg-fluid';
-    fluid.innerHTML='<div class="lg-blob b1" style="animation-delay:'+(i*0.9)+'s"></div><div class="lg-blob b2" style="animation-delay:'+(i*0.6+0.4)+'s"></div><div class="lg-blob b3" style="animation-delay:'+(i*0.4+0.2)+'s"></div>';
-    w.appendChild(fluid);
-    var rail=document.createElement('div');rail.className='lg-rail';w.appendChild(rail);
-    var spec2=document.createElement('div');spec2.className='lg-spec2';
-    spec2.style.animationDelay=(i*0.8)+'s';w.appendChild(spec2);
-    var caustic=document.createElement('div');caustic.className='lg-caustic';w.appendChild(caustic);
-  });
-  var root=document.querySelector('.countdown');
-  if(!root) return;
-  root.addEventListener('pointermove', function(e){
-    var t=e.target && e.target.closest ? e.target.closest('.num-wrap') : null;
-    wraps.forEach(function(w){
-      var c=w.querySelector('.lg-caustic');
-      if(!c) return;
-      if(t===w){
-        var r=w.getBoundingClientRect();
-        var x=((e.clientX-r.left)/r.width)*100;
-        var y=((e.clientY-r.top)/r.height)*100;
-        c.style.setProperty('--hx', x+'%');
-        c.style.setProperty('--hy', y+'%');
-        c.style.opacity='0.95';
-        var b1=w.querySelector('.lg-blob.b1');
-        var b2=w.querySelector('.lg-blob.b2');
-        if(b1) b1.style.filter='blur(18px) brightness(1.35)';
-        if(b2) b2.style.filter='blur(20px) brightness(1.25)';
-      }else{
-        c.style.opacity='0.55';
-        var bb1=w.querySelector('.lg-blob.b1');
-        var bb2=w.querySelector('.lg-blob.b2');
-        if(bb1) bb1.style.filter='blur(22px)';
-        if(bb2) bb2.style.filter='blur(22px)';
+  function init(){
+    var root=document.querySelector('.countdown');
+    if(!root) return;
+    var wraps=root.querySelectorAll('.num-wrap');
+    wraps.forEach(function(w,i){
+      // strip messy layers from previous versions
+      w.querySelectorAll('.lg-layer,.lg-fluid,.lg-rail,.lg-spec,.lg-spec2,.lg-caustic,.lg-liquid,.lg-depth,.lg-refract').forEach(function(n){n.remove()});
+      w.classList.remove('fluid-on','lg-tilt','neon','glitch');
+      w.style.transform='';
+      if(w.querySelector('canvas.lg-canvas')) return;
+      var cv=document.createElement('canvas');
+      cv.className='lg-canvas';
+      cv.width=280;cv.height=200;
+      w.insertBefore(cv, w.firstChild);
+      var sheen=document.createElement('div');
+      sheen.className='lg-sheen';
+      sheen.style.animationDelay=(i*0.7)+'s';
+      w.appendChild(sheen);
+      // calm multi-stop fluid
+      var ctx=cv.getContext('2d');
+      var t=i*1.7;
+      function frame(){
+        t+=0.008;
+        var g=ctx.createLinearGradient(0,0,cv.width,cv.height);
+        var p=0.5+0.45*Math.sin(t);
+        var p2=0.5+0.4*Math.sin(t*1.3+2);
+        g.addColorStop(0,'rgba(255,255,255,0.10)');
+        g.addColorStop(Math.max(0.05,Math.min(0.95,p*0.45)),'rgba(180,230,255,0.22)');
+        g.addColorStop(Math.max(0.15,Math.min(0.9,p2)),'rgba(255,200,240,0.14)');
+        g.addColorStop(1,'rgba(255,255,255,0.08)');
+        ctx.clearRect(0,0,cv.width,cv.height);
+        ctx.fillStyle=g;
+        ctx.fillRect(0,0,cv.width,cv.height);
+        // soft orbs
+        var x1=cv.width*(0.35+0.25*Math.sin(t));
+        var y1=cv.height*(0.4+0.2*Math.cos(t*1.1));
+        var rg=ctx.createRadialGradient(x1,y1,4,x1,y1,90);
+        rg.addColorStop(0,'rgba(255,255,255,0.35)');
+        rg.addColorStop(0.45,'rgba(160,220,255,0.12)');
+        rg.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle=rg;
+        ctx.fillRect(0,0,cv.width,cv.height);
+        var x2=cv.width*(0.7-0.2*Math.sin(t*0.8));
+        var y2=cv.height*(0.65-0.25*Math.cos(t*0.9));
+        var rg2=ctx.createRadialGradient(x2,y2,2,x2,y2,70);
+        rg2.addColorStop(0,'rgba(255,190,230,0.22)');
+        rg2.addColorStop(1,'rgba(255,255,255,0)');
+        ctx.fillStyle=rg2;
+        ctx.fillRect(0,0,cv.width,cv.height);
+        requestAnimationFrame(frame);
       }
+      frame();
     });
-  });
+    // second tick pop + refresh text shadow data
+    var sec=document.getElementById('s');
+    if(sec){
+      var last=sec.textContent;
+      setInterval(function(){
+        if(sec.textContent!==last){
+          last=sec.textContent;
+          var w=sec.closest('.num-wrap');
+          if(!w)return;
+          w.classList.remove('lg-splash');
+          void w.offsetWidth;
+          w.classList.add('lg-splash');
+        }
+      },200);
+    }
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
 })();
 
 </script>
