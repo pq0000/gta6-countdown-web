@@ -3,293 +3,361 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>GTA VI 倒计时</title>
-<meta name="description" content="Grand Theft Auto VI 发售倒计时" />
+<title>GTA VI · 倒计时</title>
+<meta name="description" content="Grand Theft Auto VI 发售倒计时 · 2026.11.19" />
 <style>
 :root{
-  color-scheme:dark;
-  --ink:#f5f7fa;
-  --dim:rgba(245,247,250,.55);
-  --glass:rgba(255,255,255,.12);
-  --line:rgba(255,255,255,.22);
-  --shadow:0 18px 48px rgba(0,0,0,.4);
+  --ink:#f7f9fc;
+  --dim:rgba(247,249,252,.55);
+  --faint:rgba(247,249,252,.28);
+  --pink:#ff7ad9;
+  --cyan:#6ee7ff;
+  --void:#05070f;
+  --glass:rgba(255,255,255,.1);
+  --line:rgba(255,255,255,.2);
 }
 *{box-sizing:border-box}
-html,body{margin:0;height:100%;overflow:hidden;background:#05060a;color:var(--ink);
-  font-family:system-ui,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-#bg{
-  position:fixed;inset:0;
-  background:#05060a center/cover no-repeat;
-  transform:scale(1.04);
-  transition:opacity .8s ease, background-image .8s ease;
+html,body{margin:0;height:100%;overflow:hidden;background:var(--void);color:var(--ink);
+  font-family:system-ui,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  -webkit-font-smoothing:antialiased}
+#stage{position:fixed;inset:0;overflow:hidden}
+#bgA,#bgB{
+  position:absolute;inset:0;
+  background:var(--void) center/cover no-repeat;
+  will-change:transform,opacity;
+  transition:opacity 1.4s ease;
+  animation:ken 28s ease-in-out infinite alternate;
 }
+#bgB{opacity:0;animation:ken2 32s ease-in-out infinite alternate}
+@keyframes ken{from{transform:scale(1.06) translate3d(-1.2%,0,0)}to{transform:scale(1.14) translate3d(1.5%,1%,0)}}
+@keyframes ken2{from{transform:scale(1.12) translate3d(1.5%,-1%,0)}to{transform:scale(1.05) translate3d(-1%,0.8%,0)}}
 #veil{
-  position:fixed;inset:0;
+  position:fixed;inset:0;z-index:1;pointer-events:none;
   background:
-    radial-gradient(ellipse at 50% 40%, rgba(0,0,0,.25) 0%, rgba(0,0,0,.62) 100%),
-    linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.55));
-  pointer-events:none;
+    linear-gradient(180deg,rgba(5,7,15,.55) 0%,rgba(5,7,15,.2) 28%,rgba(5,7,15,.35) 62%,rgba(5,7,15,.78) 100%),
+    radial-gradient(ellipse 70% 55% at 50% 42%, rgba(255,122,217,.08), transparent 60%);
 }
 #app{
-  position:relative;z-index:2;
-  height:100%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:22px;
-  padding:24px 16px 28px;
+  position:relative;z-index:2;height:100%;
+  display:grid;grid-template-rows:auto 1fr auto;
+  padding:20px 18px 22px;
+}
+.top{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);
+}
+.top .brand{font-weight:700;color:var(--ink)}
+.top .date{color:var(--faint)}
+.hero{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  text-align:center;padding:8px 0 4px;
 }
 .kicker{
-  margin:0;font-size:12px;letter-spacing:.35em;text-transform:uppercase;
+  margin:0;font-size:11px;letter-spacing:.4em;text-transform:uppercase;
   color:var(--dim);font-weight:600;
 }
 h1{
-  margin:0;font-size:clamp(1.4rem,4vw,2rem);font-weight:800;letter-spacing:.08em;
-  background:linear-gradient(90deg,#9adfff,#e8c2ff 50%,#ffb6d9);
+  margin:4px 0 0;
+  font-size:clamp(1.6rem,5vw,2.6rem);
+  font-weight:850;letter-spacing:.12em;
+  background:linear-gradient(100deg,#9adfff 0%,#e0c3ff 42%,var(--pink) 78%,#ffb38a 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 8px 28px rgba(255,122,217,.2));
 }
-.date{
-  margin:0;font-size:.95rem;color:var(--dim);letter-spacing:.12em;
+.sub{
+  margin:0;font-size:.86rem;color:var(--dim);letter-spacing:.2em;
 }
-.countdown{
-  display:flex;align-items:center;gap:clamp(8px,2vw,20px);
-  perspective:1000px;
+/* hero days */
+.days-wrap{
+  margin:18px 0 6px;display:flex;align-items:flex-end;gap:12px;
 }
-.unit{display:flex;flex-direction:column;align-items:center;gap:10px}
+.days{
+  font-size:clamp(72px,18vw,140px);
+  font-weight:800;line-height:.9;letter-spacing:-.04em;
+  font-variant-numeric:tabular-nums;
+  background:linear-gradient(180deg,#fff 10%,#dff6ff 48%,rgba(255,255,255,.65) 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 12px 40px rgba(0,0,0,.45));
+  transition:transform .35s cubic-bezier(.2,.9,.3,1);
+}
+.days.pop{transform:scale(1.03)}
+.days-unit{
+  font-size:14px;font-weight:700;letter-spacing:.3em;color:var(--dim);
+  padding-bottom:18px;
+}
+/* progress ring */
+.ring-wrap{
+  position:relative;width:110px;height:110px;margin:10px 0 2px;
+}
+.ring-wrap svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:rgba(255,255,255,.08);stroke-width:6}
+.ring-fg{
+  fill:none;stroke:url(#ringGrad);stroke-width:6;stroke-linecap:round;
+  transition:stroke-dashoffset .8s ease;
+  filter:drop-shadow(0 0 8px rgba(110,231,255,.35));
+}
+.ring-label{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:11px;letter-spacing:.18em;color:var(--dim);text-transform:uppercase;
+}
+.ring-label strong{font-size:13px;color:var(--ink);letter-spacing:.06em;font-variant-numeric:tabular-nums}
+/* clock row */
+.clock{
+  display:flex;align-items:center;justify-content:center;gap:clamp(6px,1.8vw,16px);
+  margin-top:14px;
+}
+.unit{display:flex;flex-direction:column;align-items:center;gap:8px}
 .num-wrap{
   position:relative;isolation:isolate;overflow:hidden;
-  min-width:clamp(78px,17vw,120px);
-  padding:18px 8px 16px;
-  border-radius:22px;
-  background:
-    linear-gradient(180deg,rgba(255,255,255,.2) 0%,rgba(255,255,255,.07) 45%,rgba(255,255,255,.11) 100%);
-  backdrop-filter:blur(26px) saturate(150%);
-  -webkit-backdrop-filter:blur(26px) saturate(150%);
-  border:1px solid rgba(255,255,255,.26);
-  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.4);
+  min-width:clamp(64px,14vw,104px);
+  padding:14px 6px 12px;border-radius:20px;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.06) 45%,rgba(255,255,255,.1));
+  backdrop-filter:blur(24px) saturate(155%);
+  -webkit-backdrop-filter:blur(24px) saturate(155%);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:0 14px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.35);
 }
 .num-wrap::before{
-  content:'';position:absolute;left:14%;right:14%;top:0;height:1px;z-index:4;
-  background:linear-gradient(90deg,transparent,#fff,transparent);opacity:.8;
+  content:'';position:absolute;left:16%;right:16%;top:0;height:1px;z-index:4;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
 }
 .num-wrap::after{
   content:'';position:absolute;inset:0;border-radius:inherit;z-index:3;pointer-events:none;
-  background:linear-gradient(180deg,rgba(255,255,255,.22),transparent 42%);
+  background:linear-gradient(180deg,rgba(255,255,255,.2),transparent 40%);
 }
 canvas.fluid{
-  position:absolute;inset:-6px;z-index:0;opacity:.5;pointer-events:none;
-  width:calc(100% + 12px);height:calc(100% + 12px);border-radius:24px;
+  position:absolute;inset:-4px;z-index:0;opacity:.45;pointer-events:none;
+  width:calc(100% + 8px);height:calc(100% + 8px);border-radius:22px;
 }
 .sheen{
-  position:absolute;top:0;bottom:0;width:34%;left:-40%;z-index:4;pointer-events:none;
-  background:linear-gradient(105deg,transparent,rgba(255,255,255,.35),transparent);
-  transform:skewX(-18deg);
-  animation:sheen 6s ease-in-out infinite;
-  mix-blend-mode:screen;
+  position:absolute;top:0;bottom:0;width:32%;left:-38%;z-index:4;pointer-events:none;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.32),transparent);
+  transform:skewX(-16deg);animation:sheen 7s ease-in-out infinite;mix-blend-mode:screen;
 }
 .num{
   position:relative;z-index:2;display:block;text-align:center;
-  font-size:clamp(38px,8vw,84px);font-weight:700;line-height:1;
-  font-variant-numeric:tabular-nums;
-  background:linear-gradient(180deg,#fff,#eaf6ff 50%,rgba(255,255,255,.7));
-  -webkit-background-clip:text;background-clip:text;
-  -webkit-text-fill-color:transparent;
+  font-size:clamp(28px,5.5vw,48px);font-weight:750;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:.04em;
+  background:linear-gradient(180deg,#fff,#e8f7ff 55%,rgba(255,255,255,.7));
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   filter:drop-shadow(0 2px 8px rgba(0,0,0,.35));
 }
-.unit-label{
-  font-size:10px;font-weight:600;letter-spacing:.28em;text-transform:uppercase;
-  color:var(--dim);
+.ulab{font-size:10px;font-weight:600;letter-spacing:.26em;text-transform:uppercase;color:var(--faint)}
+.dotc{font-size:clamp(16px,2.5vw,24px);color:var(--faint);padding-bottom:22px;font-weight:200}
+.num-wrap.pop{animation:pop .4s cubic-bezier(.2,.9,.3,1)}
+@keyframes pop{0%{transform:scale(1.04)}40%{transform:scale(.98)}100%{transform:scale(1)}}
+@keyframes sheen{0%{left:-38%;opacity:0}18%{opacity:.85}55%{opacity:.4}100%{left:102%;opacity:0}}
+/* footer */
+.bottom{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
 }
-.dot{
-  font-size:clamp(22px,3.5vw,36px);font-weight:200;color:rgba(255,255,255,.28);
-  padding-bottom:24px;
-}
-.toolbar{
-  display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
-}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 .btn{
-  min-width:96px;padding:10px 14px;border-radius:999px;
-  border:1px solid var(--line);
-  background:rgba(10,12,20,.45);
-  backdrop-filter:blur(12px);
-  -webkit-backdrop-filter:blur(12px);
-  color:var(--ink);font-size:.82rem;font-weight:600;letter-spacing:.04em;
-  cursor:pointer;transition:transform .15s ease, border-color .15s ease, background .15s ease;
+  padding:10px 16px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(8,10,18,.4);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  color:var(--ink);font-size:.8rem;font-weight:650;letter-spacing:.06em;
+  cursor:pointer;min-width:88px;
+  transition:transform .15s ease,border-color .15s ease,background .15s ease,box-shadow .15s ease;
 }
-.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.08)}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.42);background:rgba(255,255,255,.08);box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .btn:active{transform:translateY(0)}
+.btn.on{border-color:rgba(110,231,255,.55);box-shadow:0 0 0 1px rgba(110,231,255,.2),0 0 20px rgba(110,231,255,.12)}
 .foot{
-  margin:0;font-size:.72rem;color:rgba(255,255,255,.35);text-align:center;
-  max-width:520px;line-height:1.5;
+  margin:0;font-size:.68rem;color:rgba(255,255,255,.32);text-align:center;max-width:480px;line-height:1.45;
 }
-@keyframes sheen{
-  0%{left:-40%;opacity:0}
-  20%{opacity:.85}
-  60%{opacity:.4}
-  100%{left:105%;opacity:0}
+@media (max-width:420px){
+  .ring-wrap{width:88px;height:88px}
+  .days-wrap{margin-top:12px}
 }
-.num-wrap.pop{animation:pop .45s cubic-bezier(.2,.9,.3,1)}
-@keyframes pop{0%{transform:scale(1.05)}45%{transform:scale(.97)}100%{transform:scale(1)}}
 @media (prefers-reduced-motion:reduce){
-  .sheen{animation:none}
-  #bg{transition:none}
+  #bgA,#bgB,.sheen{animation:none}
 }
 </style>
 </head>
 <body>
-<div id="bg"></div>
+<div id="stage">
+  <div id="bgA"></div>
+  <div id="bgB"></div>
+</div>
 <div id="veil"></div>
 
-<main id="app">
-  <p class="kicker">Release Countdown</p>
-  <h1>Grand Theft Auto VI</h1>
-  <p class="date">目标发售日 · 2026.11.19</p>
+<div id="app">
+  <header class="top">
+    <span class="brand">GTA VI</span>
+    <span class="date">2026.11.19</span>
+  </header>
 
-  <div class="countdown" id="countdown">
-    <div class="unit">
-      <div class="num-wrap"><span class="num" id="d">--</span></div>
-      <span class="unit-label">天</span>
-    </div>
-    <span class="dot">:</span>
-    <div class="unit">
-      <div class="num-wrap"><span class="num" id="h">--</span></div>
-      <span class="unit-label">时</span>
-    </div>
-    <span class="dot">:</span>
-    <div class="unit">
-      <div class="num-wrap"><span class="num" id="m">--</span></div>
-      <span class="unit-label">分</span>
-    </div>
-    <span class="dot">:</span>
-    <div class="unit">
-      <div class="num-wrap"><span class="num" id="s">--</span></div>
-      <span class="unit-label">秒</span>
-    </div>
-  </div>
+  <section class="hero">
+    <p class="kicker">Leonida · Waitlist</p>
+    <h1>Grand Theft Auto VI</h1>
+    <p class="sub">距离开放世界还有</p>
 
-  <div class="toolbar">
-    <button type="button" class="btn" id="music-btn">音乐 关</button>
-    <button type="button" class="btn" id="next-bg-btn">换背景</button>
-    <button type="button" class="btn" id="full-btn">全屏</button>
-  </div>
+    <div class="days-wrap">
+      <span class="days" id="days">--</span>
+      <span class="days-unit">DAYS</span>
+    </div>
 
-  <p class="foot">背景为官方公开素材 · 仅个人展示 · 版权归 Rockstar Games</p>
-</main>
+    <div class="ring-wrap" aria-hidden="true">
+      <svg viewBox="0 0 120 120">
+        <defs>
+          <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6ee7ff"/>
+            <stop offset="100%" stop-color="#ff7ad9"/>
+          </linearGradient>
+        </defs>
+        <circle class="ring-bg" cx="60" cy="60" r="52"/>
+        <circle class="ring-fg" id="ring" cx="60" cy="60" r="52"
+          stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+      </svg>
+      <div class="ring-label"><span>PROGRESS</span><strong id="ringPct">0%</strong></div>
+    </div>
+
+    <div class="clock">
+      <div class="unit">
+        <div class="num-wrap"><span class="num" id="h">--</span></div>
+        <span class="ulab">时</span>
+      </div>
+      <span class="dotc">:</span>
+      <div class="unit">
+        <div class="num-wrap"><span class="num" id="m">--</span></div>
+        <span class="ulab">分</span>
+      </div>
+      <span class="dotc">:</span>
+      <div class="unit">
+        <div class="num-wrap"><span class="num" id="s">--</span></div>
+        <span class="ulab">秒</span>
+      </div>
+    </div>
+  </section>
+
+  <footer class="bottom">
+    <div class="toolbar">
+      <button type="button" class="btn" id="musicBtn">音乐 关</button>
+      <button type="button" class="btn" id="bgBtn">换景</button>
+      <button type="button" class="btn" id="fullBtn">全屏</button>
+    </div>
+    <p class="foot">背景素材来自 Rockstar 公开图片 · 个人倒计时页 · 非官方</p>
+  </footer>
+</div>
 
 <script>
-var TARGET = new Date('2026-11-19T00:00:00');
-var TRACKS = ['music/vice_beach.mp3','music/neon_rush.mp3'];
-var IMAGES = [
-  'gta6-images/Vice_City_01.jpg','gta6-images/Vice_City_02.jpg','gta6-images/Vice_City_03.jpg',
-  'gta6-images/Vice_City_04.jpg','gta6-images/Vice_City_05.jpg','gta6-images/Vice_City_06.jpg',
-  'gta6-images/Leonida_Keys_01.jpg','gta6-images/Leonida_Keys_02.jpg','gta6-images/Leonida_Keys_03.jpg',
-  'gta6-images/Grassrivers.jpg','gta6-images/Ambrosia.jpg','gta6-images/Mount_Kalaga.jpg',
-  'gta6-images/Port_Gellhorn.jpg','gta6-images/Jason_and_Lucia_01.jpg',
-  'gta6-images/Jason_and_Lucia_02.jpg','gta6-images/Jason_and_Lucia_03.jpg',
-  'gta6-images/Official_Cover_Art.jpg',
-  'gta6-images/web_featured.jpg','gta6-images/web_mediaDesktop.jpg',
-  'gta6-images/web_musicDesktop.jpg','gta6-images/web_onlyInLeonidaDesktop.jpg',
-  'gta6-images/web_an-extended-look.jpg'
-];
-
-var bgEl = document.getElementById('bg');
-var pool = IMAGES.slice();
-var audio = new Audio();
-audio.loop = true;
-audio.volume = 0.45;
-audio.src = TRACKS[0];
-var musicOn = false;
-var trackIdx = 0;
-
-function pad(n){ return String(n).padStart(2,'0'); }
-
-function tick(){
-  var now = new Date();
-  var ms = TARGET - now;
-  var parts = { d:0, h:0, m:0, s:0 };
-  if (ms > 0) {
-    var sec = Math.floor(ms/1000);
-    parts.d = Math.floor(sec/86400);
-    parts.h = Math.floor(sec%86400/3600);
-    parts.m = Math.floor(sec%3600/60);
-    parts.s = sec%60;
-  }
-  ['d','h','m','s'].forEach(function(k){
-    var el = document.getElementById(k);
-    var v = k==='d' ? String(parts.d) : pad(parts[k]);
-    if (el.textContent !== v) {
-      el.textContent = v;
-      var wrap = el.parentElement;
-      if (wrap) {
-        wrap.classList.remove('pop');
-        void wrap.offsetWidth;
-        wrap.classList.add('pop');
-      }
-    }
-  });
-}
-tick();
-setInterval(tick, 1000);
-
-function nextBg(){
-  if (!pool.length) pool = IMAGES.slice();
-  var i = Math.floor(Math.random()*pool.length);
-  var url = pool.splice(i,1)[0];
-  bgEl.style.backgroundImage = 'url(\'' + url + '\')';
-}
-nextBg();
-setInterval(nextBg, 14000);
-
-document.getElementById('next-bg-btn').onclick = nextBg;
-
-document.getElementById('music-btn').onclick = function(){
-  musicOn = !musicOn;
-  this.textContent = musicOn ? '音乐 开' : '音乐 关';
-  if (musicOn) {
-    audio.play().catch(function(){ musicOn = false; document.getElementById('music-btn').textContent = '音乐 关'; });
-  } else {
-    audio.pause();
-  }
-};
-
-document.getElementById('full-btn').onclick = function(){
-  if (!document.fullscreenElement) {
-    (document.documentElement.requestFullscreen||function(){}).call(document.documentElement);
-  } else {
-    (document.exitFullscreen||function(){}).call(document);
-  }
-};
-
-// glass fluid canvases
 (function(){
-  var wraps = document.querySelectorAll('.num-wrap');
-  wraps.forEach(function(w, i){
-    var cv = document.createElement('canvas');
-    cv.className = 'fluid';
-    cv.width = 240; cv.height = 180;
-    w.insertBefore(cv, w.firstChild);
-    var sheen = document.createElement('div');
-    sheen.className = 'sheen';
-    sheen.style.animationDelay = (i*0.65)+'s';
+  var TARGET=new Date('2026-11-19T00:00:00');
+  var START=new Date('2025-01-01T00:00:00');
+  var TOTAL=Math.max(1, TARGET-START);
+  var CIRC=2*Math.PI*52;
+
+  var IMAGES=[
+    'gta6-images/Vice_City_01.jpg','gta6-images/Vice_City_03.jpg','gta6-images/Vice_City_05.jpg',
+    'gta6-images/Leonida_Keys_01.jpg','gta6-images/Leonida_Keys_02.jpg','gta6-images/Leonida_Keys_03.jpg',
+    'gta6-images/Grassrivers.jpg','gta6-images/Ambrosia.jpg','gta6-images/Mount_Kalaga.jpg',
+    'gta6-images/Port_Gellhorn.jpg','gta6-images/Jason_and_Lucia_01.jpg',
+    'gta6-images/Jason_and_Lucia_02.jpg','gta6-images/Official_Cover_Art.jpg',
+    'gta6-images/web_featured.jpg','gta6-images/web_mediaDesktop.jpg','gta6-images/web_an-extended-look.jpg'
+  ];
+  var TRACKS=['music/vice_beach.mp3','music/neon_rush.mp3'];
+
+  var bgA=document.getElementById('bgA');
+  var bgB=document.getElementById('bgB');
+  var showA=true;
+  var pool=IMAGES.slice();
+  var audio=new Audio();
+  audio.loop=true; audio.volume=0.42; audio.src=TRACKS[0];
+  var musicOn=false;
+
+  function pick(){
+    if(!pool.length) pool=IMAGES.slice();
+    var i=Math.floor(Math.random()*pool.length);
+    return pool.splice(i,1)[0];
+  }
+  function setBackground(url){
+    var el=showA?bgB:bgA;
+    var old=showA?bgA:bgB;
+    el.style.backgroundImage='url("'+url+'")';
+    el.style.opacity='1';
+    old.style.opacity='0';
+    showA=!showA;
+  }
+  setBackground(pick());
+  setInterval(function(){ setBackground(pick()); }, 15000);
+
+  function pad(n){return String(n).padStart(2,'0');}
+
+  function tick(){
+    var now=new Date();
+    var ms=TARGET-now;
+    var d=0,h=0,m=0,s=0;
+    if(ms>0){
+      var sec=Math.floor(ms/1000);
+      d=Math.floor(sec/86400);
+      h=Math.floor(sec%86400/3600);
+      m=Math.floor(sec%3600/60);
+      s=sec%60;
+    }
+    var daysEl=document.getElementById('days');
+    var ds=String(d);
+    if(daysEl.textContent!==ds){
+      daysEl.textContent=ds;
+      daysEl.classList.remove('pop'); void daysEl.offsetWidth; daysEl.classList.add('pop');
+    }
+    [['h',h],['m',m],['s',s]].forEach(function(pair){
+      var el=document.getElementById(pair[0]);
+      var v=pad(pair[1]);
+      if(el.textContent!==v){
+        el.textContent=v;
+        var w=el.parentElement;
+        if(w){w.classList.remove('pop'); void w.offsetWidth; w.classList.add('pop');}
+      }
+    });
+    var done=Math.min(1, Math.max(0, 1-(TARGET-now)/TOTAL));
+    var ring=document.getElementById('ring');
+    ring.style.strokeDashoffset=String(CIRC*(1-done));
+    document.getElementById('ringPct').textContent=Math.round(done*100)+'%';
+  }
+  tick(); setInterval(tick,1000);
+
+  document.getElementById('bgBtn').onclick=function(){ setBackground(pick()); };
+  document.getElementById('musicBtn').onclick=function(){
+    musicOn=!musicOn;
+    this.textContent=musicOn?'音乐 开':'音乐 关';
+    this.classList.toggle('on',musicOn);
+    if(musicOn){
+      audio.play().catch(function(){musicOn=false;document.getElementById('musicBtn').textContent='音乐 关';});
+    } else audio.pause();
+  };
+  document.getElementById('fullBtn').onclick=function(){
+    if(!document.fullscreenElement){
+      (document.documentElement.requestFullscreen||function(){}).call(document.documentElement);
+    } else {
+      (document.exitFullscreen||function(){}).call(document);
+    }
+  };
+
+  document.querySelectorAll('.num-wrap').forEach(function(w,i){
+    var cv=document.createElement('canvas');
+    cv.className='fluid'; cv.width=200; cv.height=150;
+    w.insertBefore(cv,w.firstChild);
+    var sheen=document.createElement('div');
+    sheen.className='sheen'; sheen.style.animationDelay=(i*0.8)+'s';
     w.appendChild(sheen);
-    var ctx = cv.getContext('2d');
-    var t = i;
-    (function frame(){
-      t += 0.007;
-      var g = ctx.createLinearGradient(0,0,cv.width,cv.height);
-      var p = 0.5 + 0.4*Math.sin(t);
-      g.addColorStop(0,'rgba(255,255,255,.08)');
-      g.addColorStop(Math.max(.05,Math.min(.9,p*.4)),'rgba(180,230,255,.18)');
-      g.addColorStop(1,'rgba(255,255,255,.06)');
+    var ctx=cv.getContext('2d'); var t=i*1.2;
+    (function loop(){
+      t+=0.006;
       ctx.clearRect(0,0,cv.width,cv.height);
-      ctx.fillStyle = g;
-      ctx.fillRect(0,0,cv.width,cv.height);
-      var x = cv.width*(0.4+0.25*Math.sin(t));
-      var y = cv.height*(0.45+0.2*Math.cos(t));
-      var rg = ctx.createRadialGradient(x,y,3,x,y,80);
-      rg.addColorStop(0,'rgba(255,255,255,.28)');
+      var g=ctx.createLinearGradient(0,0,cv.width,cv.height);
+      g.addColorStop(0,'rgba(255,255,255,.08)');
+      g.addColorStop(0.45,'rgba(110,231,255,'+(0.08+0.06*Math.sin(t))+')');
+      g.addColorStop(0.75,'rgba(255,122,217,'+(0.05+0.04*Math.cos(t))+')');
+      g.addColorStop(1,'rgba(255,255,255,.06)');
+      ctx.fillStyle=g; ctx.fillRect(0,0,cv.width,cv.height);
+      var x=cv.width*(0.45+0.2*Math.sin(t*0.9));
+      var y=cv.height*(0.5+0.18*Math.cos(t));
+      var rg=ctx.createRadialGradient(x,y,2,x,y,70);
+      rg.addColorStop(0,'rgba(255,255,255,.22)');
       rg.addColorStop(1,'rgba(255,255,255,0)');
-      ctx.fillStyle = rg;
-      ctx.fillRect(0,0,cv.width,cv.height);
-      requestAnimationFrame(frame);
+      ctx.fillStyle=rg; ctx.fillRect(0,0,cv.width,cv.height);
+      requestAnimationFrame(loop);
     })();
   });
 })();
