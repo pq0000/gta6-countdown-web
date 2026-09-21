@@ -93,7 +93,8 @@ body.neon .label{-webkit-text-fill-color:#fff;color:#fff;
 .unit-label{font-size:10px;font-weight:700;letter-spacing:.26em;text-transform:uppercase;color:var(--faint)}
 
 /* ═══ Style: glass (default commercial frosted) ═══ */
-#countdown[data-style="glass"]{display:flex;align-items:flex-start;gap:clamp(8px,2vw,18px)}
+#countdown[data-style="glass"]{display:block}
+#countdown[data-style="glass"] .row{display:flex;align-items:flex-start;justify-content:center;gap:clamp(8px,2vw,18px)}
 #countdown[data-style="glass"] .unit{display:flex;flex-direction:column;align-items:center;gap:10px}
 #countdown[data-style="glass"] .num-wrap{position:relative;isolation:isolate;overflow:hidden;
   min-width:clamp(72px,16vw,118px);padding:16px 8px 14px;border-radius:22px;
@@ -119,7 +120,8 @@ body.neon #countdown[data-style="glass"] .num{-webkit-text-fill-color:#fff;backg
 @keyframes sheen{0%{left:-40%;opacity:0}20%{opacity:.8}60%{opacity:.35}100%{left:105%;opacity:0}}
 
 /* ═══ Style: apple (Product-page clean) ═══ */
-#countdown[data-style="apple"]{display:flex;align-items:flex-end;justify-content:center;gap:clamp(18px,4vw,48px)}
+#countdown[data-style="apple"]{display:block}
+#countdown[data-style="apple"] .row{display:flex;align-items:flex-end;justify-content:center;gap:clamp(18px,4vw,48px)}
 #countdown[data-style="apple"] .unit{display:flex;flex-direction:column;align-items:center;gap:2px;min-width:72px}
 #countdown[data-style="apple"] .num-wrap{background:none;border:none;box-shadow:none;padding:0;min-width:0;
   backdrop-filter:none;-webkit-backdrop-filter:none}
@@ -131,7 +133,8 @@ body.neon #countdown[data-style="glass"] .num{-webkit-text-fill-color:#fff;backg
 #countdown[data-style="apple"] canvas.fluid,#countdown[data-style="apple"] .sheen{display:none}
 
 /* ═══ Style: flip (airport split-flap) ═══ */
-#countdown[data-style="flip"]{display:flex;align-items:center;gap:clamp(8px,2vw,16px)}
+#countdown[data-style="flip"]{display:block}
+#countdown[data-style="flip"] .row{display:flex;align-items:center;justify-content:center;gap:clamp(8px,2vw,16px)}
 #countdown[data-style="flip"] .unit{display:flex;flex-direction:column;align-items:center;gap:8px}
 #countdown[data-style="flip"] .num-wrap{position:relative;min-width:clamp(64px,14vw,96px);height:clamp(64px,14vw,96px);
   padding:0;border-radius:10px;overflow:hidden;
@@ -149,7 +152,8 @@ body.neon #countdown[data-style="glass"] .num{-webkit-text-fill-color:#fff;backg
 @keyframes flipPop{0%{transform:rotateX(-25deg);filter:brightness(1.25)}100%{transform:none}}
 
 /* ═══ Style: segment (LED digital, commercial retro) ═══ */
-#countdown[data-style="segment"]{display:flex;align-items:center;gap:clamp(6px,1.5vw,14px)}
+#countdown[data-style="segment"]{display:block}
+#countdown[data-style="segment"] .row{display:flex;align-items:center;justify-content:center;gap:clamp(6px,1.5vw,14px)}
 #countdown[data-style="segment"] .unit{display:flex;flex-direction:column;align-items:center;gap:8px}
 #countdown[data-style="segment"] .num-wrap{position:relative;min-width:clamp(70px,15vw,110px);
   padding:12px 8px;border-radius:8px;
@@ -178,7 +182,8 @@ body.tense #countdown[data-style="segment"] .num{color:#fda4af;text-shadow:0 0 1
 #countdown[data-style="minimal"] canvas.fluid,#countdown[data-style="minimal"] .sheen{display:none}
 
 /* ═══ Style: ring (fitness-app like) ═══ */
-#countdown[data-style="ring"]{display:flex;align-items:center;gap:clamp(10px,2.2vw,22px);flex-wrap:wrap;justify-content:center}
+#countdown[data-style="ring"]{display:block}
+#countdown[data-style="ring"] .row{display:flex;align-items:center;justify-content:center;gap:clamp(10px,2.2vw,22px);flex-wrap:wrap}
 #countdown[data-style="ring"] .unit{display:flex;flex-direction:column;align-items:center;gap:6px}
 #countdown[data-style="ring"] .num-wrap{position:relative;width:clamp(72px,16vw,104px);height:clamp(72px,16vw,104px);
   padding:0;border:none;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
@@ -784,9 +789,9 @@ document.getElementById('app').addEventListener('pointerdown',function(e){
   document.body.appendChild(r);
   setTimeout(function(){r.remove();},650);
 });
-var style=documentEl=document.createElement('style');
+var styleEl=document.createElement('style');
 style.textContent='@keyframes rip{from{width:0;height:0;opacity:.8}to{width:260px;height:260px;opacity:0}}';
-document.head.appendChild(style);
+document.head.appendChild(styleEl);
 
 document.addEventListener('keydown',function(e){
   if(e.key==='f'||e.key==='F') toggleFullscreen();
