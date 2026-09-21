@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
@@ -790,7 +790,7 @@ document.getElementById('app').addEventListener('pointerdown',function(e){
   setTimeout(function(){r.remove();},650);
 });
 var styleEl=document.createElement('style');
-style.textContent='@keyframes rip{from{width:0;height:0;opacity:.8}to{width:260px;height:260px;opacity:0}}';
+styleEl.textContent='@keyframes rip{from{width:0;height:0;opacity:.8}to{width:260px;height:260px;opacity:0}}';
 document.head.appendChild(styleEl);
 
 document.addEventListener('keydown',function(e){
@@ -811,3 +811,4 @@ applyFeatures();
 </script>
 </body>
 </html>
+
